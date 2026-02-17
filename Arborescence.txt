@@ -1,5 +1,5 @@
 DiskToolsUi/
-├── Resources/              ← BIEN "Resources" (pas Ressources)
+├── Resources/
 │   ├── Themes/
 │   │   └── Dark.xaml
 │   └── Styles/
@@ -8,11 +8,19 @@ DiskToolsUi/
 ├── ViewModels/
 │   └── MainWindowViewModel.cs
 ├── Models/
-│   └── UiConfig.cs
+│   ├── UiConfig.cs
+│   ├── ActionItem.cs
+│   └── ResultItem.cs
 ├── Services/
-│   ├── ConfigService.cs    ← Nouveau
+│   ├── ConfigService.cs
 │   └── PowerShellRunner.cs
-├── appsettings.json        ← Nouveau
+├── Converters/
+│   └── BoolToVisibilityConverter.cs
+├── Icons/
+│   └── app.ico
+├── Scripts/
+│   ├── config.json
+│   └── DiskFunctions.ps1
 ├── MainWindow.xaml
 ├── MainWindow.xaml.cs
 ├── App.xaml
