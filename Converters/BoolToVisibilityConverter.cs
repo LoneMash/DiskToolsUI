@@ -5,7 +5,6 @@ using System.Windows.Data;
 
 namespace DiskToolsUi.Converters
 {
-    // VERSION 1.00
     public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -19,11 +18,7 @@ namespace DiskToolsUi.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Visibility visibility)
-            {
-                return visibility == Visibility.Visible;
-            }
-            return false;
+            throw new NotImplementedException();
         }
     }
 }

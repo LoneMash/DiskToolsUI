@@ -1,0 +1,39 @@
+{
+  "UI": {
+    "Title": "Disk Tools UI",
+    "WindowWidth": 900,
+    "WindowHeight": 600,
+    "Parameters": [
+      {
+        "Name": "DriveLetter",
+        "Label": "Lettre de lecteur :",
+        "Default": "C:"
+      }
+    ],
+    "Actions": [
+      {
+        "Name": "📀 Infos Disque",
+        "FunctionName": "Get-DiskInfo",
+        "ResultField": "DiskInfo"
+      },
+      {
+        "Name": "🔢 Numéro de Série",
+        "FunctionName": "Get-DiskSerial",
+        "ResultField": "SerialNumber"
+      },
+      {
+        "Name": "💾 Espace Disponible",
+        "FunctionName": "Get-FreeSpace",
+        "ResultField": "FreeSpace"
+      },
+      {
+        "Name": "📊 Statistiques Complètes",
+        "FunctionName": "Get-CompleteStats",
+        "ResultField": "Stats"
+      }
+    ]
+  },
+  "PowerShell": {
+    "FunctionsScriptPath": "./Scripts/DiskFunctions.ps1"
+  }
+}

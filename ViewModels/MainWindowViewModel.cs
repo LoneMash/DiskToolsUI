@@ -1,282 +1,169 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Management;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using DiskToolsUi.Models;
+using DiskToolsUi.Services;
 
 namespace DiskToolsUi.ViewModels
 {
-    // VERSION 1.30 + Icône
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged, IDisposable
     {
-        private string _windowTitle = "Disk Tools UI";
-        private double _windowWidth = 900;
-        private double _windowHeight = 600;
+        private readonly ConfigService _configService;
+        private readonly PowerShellRunner _psRunner;
+        private AppConfig? _appConfig;
+        
+        private bool _isLoading;
         private string _driveLetter = "C:";
-        private bool _isLoading = false;
+        private string _statusMessage = "Prêt";
 
-        public string WindowTitle
+        public MainWindowViewModel()
         {
-            get => _windowTitle;
-            set { _windowTitle = value; OnPropertyChanged(); }
+            _configService = new ConfigService();
+            _psRunner = new PowerShellRunner();
+            
+            Actions = new ObservableCollection<ActionItem>();
+            Results = new ObservableCollection<ResultItem>();
+            
+            ExecuteActionCommand = new RelayCommand(
+                async param => await ExecuteActionAsync((ActionItem)param!),
+                param => !IsLoading && param is ActionItem
+            );
+            
+            _ = InitializeAsync();
         }
 
-        public double WindowWidth
-        {
-            get => _windowWidth;
-            set { _windowWidth = value; OnPropertyChanged(); }
-        }
+        public ObservableCollection<ActionItem> Actions { get; }
+        public ObservableCollection<ResultItem> Results { get; }
+        public RelayCommand ExecuteActionCommand { get; }
 
-        public double WindowHeight
+        public bool IsLoading
         {
-            get => _windowHeight;
-            set { _windowHeight = value; OnPropertyChanged(); }
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+                ExecuteActionCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public string DriveLetter
         {
             get => _driveLetter;
-            set { _driveLetter = value; OnPropertyChanged(); }
-        }
-
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set { _isLoading = value; OnPropertyChanged(); }
-        }
-
-        public ObservableCollection<ActionItem> Actions { get; set; }
-        public ObservableCollection<ResultItem> Results { get; set; }
-
-        public MainWindowViewModel()
-        {
-            Actions = new ObservableCollection<ActionItem>
+            set
             {
-                new ActionItem
+                _driveLetter = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set
+            {
+                _statusMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private async Task InitializeAsync()
+        {
+            try
+            {
+                IsLoading = true;
+                StatusMessage = "Chargement de la configuration...";
+
+                _appConfig = await _configService.LoadConfigAsync();
+
+                // Charger le script PowerShell
+                await _psRunner.LoadScriptAsync(_appConfig.PowerShell.FunctionsScriptPath);
+
+                // Charger les actions depuis la config
+                foreach (var actionConfig in _appConfig.UI.Actions)
                 {
-                    Name = "📀 Infos Disque",
-                    Command = new RelayCommand(async () => await GetDiskInfoAsync())
-                },
-                new ActionItem
-                {
-                    Name = "🔢 Numéro de Série",
-                    Command = new RelayCommand(async () => await GetSerialNumberAsync())
-                },
-                new ActionItem
-                {
-                    Name = "🗂️ Système de Fichiers",
-                    Command = new RelayCommand(async () => await GetFileSystemAsync())
-                },
-                new ActionItem
-                {
-                    Name = "🧹 Effacer Résultats",
-                    Command = new RelayCommand(ClearResults)
+                    Actions.Add(new ActionItem
+                    {
+                        Name = actionConfig.Name,
+                        FunctionName = actionConfig.FunctionName,
+                        ResultField = actionConfig.ResultField
+                    });
                 }
-            };
 
-            Results = new ObservableCollection<ResultItem>();
-            
-            LoadConfiguration();
-        }
-
-        private async Task GetDiskInfoAsync()
-        {
-            IsLoading = true;
-            Results.Clear();
-
-            try
-            {
-                await Task.Run(() =>
+                // Charger les paramètres par défaut
+                var driveParam = _appConfig.UI.Parameters.FirstOrDefault(p => p.Name == "DriveLetter");
+                if (driveParam != null)
                 {
-                    using var searcher = new ManagementObjectSearcher(
-                        $"SELECT * FROM Win32_LogicalDisk WHERE DeviceID='{DriveLetter}'");
-
-                    foreach (ManagementObject disk in searcher.Get())
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            Results.Add(new ResultItem
-                            {
-                                Label = "Lecteur",
-                                Value = disk["DeviceID"]?.ToString() ?? "N/A"
-                            });
-                            Results.Add(new ResultItem
-                            {
-                                Label = "Nom du volume",
-                                Value = disk["VolumeName"]?.ToString() ?? "N/A"
-                            });
-                            Results.Add(new ResultItem
-                            {
-                                Label = "Système de fichiers",
-                                Value = disk["FileSystem"]?.ToString() ?? "N/A"
-                            });
-
-                            var size = disk["Size"] != null
-                                ? $"{Convert.ToDouble(disk["Size"]) / (1024 * 1024 * 1024):F2} Go"
-                                : "N/A";
-                            Results.Add(new ResultItem { Label = "Capacité totale", Value = size });
-
-                            var freeSpace = disk["FreeSpace"] != null
-                                ? $"{Convert.ToDouble(disk["FreeSpace"]) / (1024 * 1024 * 1024):F2} Go"
-                                : "N/A";
-                            Results.Add(new ResultItem { Label = "Espace libre", Value = freeSpace });
-                        });
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Results.Add(new ResultItem
-                    {
-                        Label = "Erreur",
-                        Value = ex.Message
-                    });
-                });
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
-        private async Task GetSerialNumberAsync()
-        {
-            IsLoading = true;
-            Results.Clear();
-
-            try
-            {
-                await Task.Run(() =>
-                {
-                    using var searcher = new ManagementObjectSearcher(
-                        $"SELECT * FROM Win32_LogicalDisk WHERE DeviceID='{DriveLetter}'");
-
-                    foreach (ManagementObject disk in searcher.Get())
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            Results.Add(new ResultItem
-                            {
-                                Label = "Numéro de série",
-                                Value = disk["VolumeSerialNumber"]?.ToString() ?? "N/A"
-                            });
-                        });
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Results.Add(new ResultItem
-                    {
-                        Label = "Erreur",
-                        Value = ex.Message
-                    });
-                });
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
-        private async Task GetFileSystemAsync()
-        {
-            IsLoading = true;
-            Results.Clear();
-
-            try
-            {
-                await Task.Run(() =>
-                {
-                    using var searcher = new ManagementObjectSearcher(
-                        $"SELECT * FROM Win32_LogicalDisk WHERE DeviceID='{DriveLetter}'");
-
-                    foreach (ManagementObject disk in searcher.Get())
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            Results.Add(new ResultItem
-                            {
-                                Label = "Système de fichiers",
-                                Value = disk["FileSystem"]?.ToString() ?? "N/A"
-                            });
-                        });
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Results.Add(new ResultItem
-                    {
-                        Label = "Erreur",
-                        Value = ex.Message
-                    });
-                });
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
-        private void ClearResults()
-        {
-            Results.Clear();
-        }
-
-        private void LoadConfiguration()
-        {
-            try
-            {
-                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
-                
-                if (File.Exists(configPath))
-                {
-                    var json = File.ReadAllText(configPath);
-                    
-                    // Parse simple du JSON
-                    if (json.Contains("WindowTitle"))
-                    {
-                        var titleStart = json.IndexOf("\"WindowTitle\"") + 16;
-                        var titleEnd = json.IndexOf("\"", titleStart);
-                        if (titleEnd > titleStart)
-                        {
-                            WindowTitle = json.Substring(titleStart, titleEnd - titleStart);
-                        }
-                    }
-                    
-                    if (json.Contains("DefaultDriveLetter"))
-                    {
-                        var driveStart = json.IndexOf("\"DefaultDriveLetter\"") + 23;
-                        var driveEnd = json.IndexOf("\"", driveStart);
-                        if (driveEnd > driveStart)
-                        {
-                            DriveLetter = json.Substring(driveStart, driveEnd - driveStart);
-                        }
-                    }
+                    DriveLetter = driveParam.Default;
                 }
+
+                StatusMessage = "Prêt";
             }
-            catch
+            catch (Exception ex)
             {
-                // Valeurs par défaut si échec
+                StatusMessage = $"Erreur d'initialisation: {ex.Message}";
+                MessageBox.Show($"Erreur lors de l'initialisation :\n{ex.Message}", 
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task ExecuteActionAsync(ActionItem action)
+        {
+            try
+            {
+                IsLoading = true;
+                StatusMessage = $"Exécution: {action.Name}...";
+                Results.Clear();
+
+                var parameters = new Dictionary<string, object>
+                {
+                    { "DriveLetter", DriveLetter }
+                };
+
+                var result = await _psRunner.ExecuteFunctionAsync(action.FunctionName, parameters);
+
+                foreach (var kvp in result)
+                {
+                    Results.Add(new ResultItem
+                    {
+                        Label = kvp.Key,
+                        Value = kvp.Value
+                    });
+                }
+
+                StatusMessage = $"Terminé: {action.Name}";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Erreur: {ex.Message}";
+                MessageBox.Show($"Erreur lors de l'exécution :\n{ex.Message}", 
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Dispose()
+        {
+            _psRunner?.Dispose();
         }
     }
 }
