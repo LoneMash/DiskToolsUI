@@ -1,0 +1,21 @@
+DiskToolsUi/
+├── Resources/              ← BIEN "Resources" (pas Ressources)
+│   ├── Themes/
+│   │   └── Dark.xaml
+│   └── Styles/
+│       ├── Buttons.xaml
+│       └── Layout.xaml
+├── ViewModels/
+│   └── MainWindowViewModel.cs
+├── Models/
+│   └── UiConfig.cs
+├── Services/
+│   ├── ConfigService.cs    ← Nouveau
+│   └── PowerShellRunner.cs
+├── appsettings.json        ← Nouveau
+├── MainWindow.xaml
+├── MainWindow.xaml.cs
+├── App.xaml
+├── App.xaml.cs
+├── RelayCommand.cs
+└── DiskToolsUi.csproj
