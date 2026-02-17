@@ -1,150 +1,218 @@
-function Get-DiskInfo {
+# DiskFunctions.ps1
+# Toutes les fonctions réutilisent les mêmes données disque, calculées une seule fois.
+
+# Variables de portée script, accessibles par toutes les fonctions de ce fichier
+$script:DiskDriveInfo = $null
+$script:DiskLogicalInfo = $null
+$script:DiskHardwareInfo = $null
+
+function Initialize-DiskContext {
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$DriveLetter
     )
-    
+
+    # Normaliser le drive letter (ex: "C:" -> "C")
+    $normalizedLetter = $DriveLetter.TrimEnd(':').ToUpper()
+
     try {
-        $disk = Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID='$DriveLetter'"
-        
-        if ($null -eq $disk) {
-            return @{
-                Error = "Lecteur '$DriveLetter' introuvable"
-            }
+        # Win32_LogicalDisk pour la taille, free space, filesystem...
+        $logical = Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID='$($normalizedLetter):'"
+        if ($null -eq $logical) {
+            throw "Lecteur '$DriveLetter' introuvable (Win32_LogicalDisk)."
         }
-        
+
+        # Get-Partition | Get-Disk pour le serial hardware
+        $partition = Get-Partition -DriveLetter $normalizedLetter -ErrorAction Stop
+        $disk = $partition | Get-Disk -ErrorAction Stop
+
+        # Stockage dans des variables de script
+        $script:DiskLogicalInfo = $logical
+        $script:DiskHardwareInfo = $disk
+        $script:DiskDriveInfo = @{
+            DriveLetter = "$normalizedLetter"
+        }
+
+        return $true
+    }
+    catch {
+        $script:DiskDriveInfo  = $null
+        $script:DiskLogicalInfo = $null
+        $script:DiskHardwareInfo = $null
+
         return @{
-            DeviceID = $disk.DeviceID
-            VolumeName = if ($disk.VolumeName) { $disk.VolumeName } else { "Sans nom" }
+            Error = "Erreur d'initialisation du disque '$DriveLetter' : $($_.Exception.Message)"
+        }
+    }
+}
+
+function Get-DiskInfo {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$DriveLetter
+    )
+
+    $initResult = Initialize-DiskContext -DriveLetter $DriveLetter
+    if ($initResult -isnot [bool]) {
+        return $initResult
+    }
+
+    try {
+        $disk = $script:DiskLogicalInfo
+
+        $totalGB   = [math]::Round($disk.Size / 1GB, 2)
+        $freeGB    = [math]::Round($disk.FreeSpace / 1GB, 2)
+        $usedGB    = [math]::Round(($disk.Size - $disk.FreeSpace) / 1GB, 2)
+        $percentFree = [math]::Round(($disk.FreeSpace / $disk.Size) * 100, 2)
+
+        return @{
+            DeviceID   = $disk.DeviceID
+            VolumeName = if ($disk.VolumeName)        { $disk.VolumeName }        else { "Sans nom" }
             FileSystem = $disk.FileSystem
-            DriveType = switch ($disk.DriveType) {
+            DriveType  = switch ($disk.DriveType) {
                 2 { "Disque amovible" }
                 3 { "Disque local" }
                 4 { "Lecteur réseau" }
                 5 { "CD-ROM" }
                 default { "Inconnu" }
             }
-            TotalSize = "{0:N2} GB" -f ($disk.Size / 1GB)
-            FreeSpace = "{0:N2} GB" -f ($disk.FreeSpace / 1GB)
-            UsedSpace = "{0:N2} GB" -f (($disk.Size - $disk.FreeSpace) / 1GB)
-            PercentFree = "{0:N2} %" -f (($disk.FreeSpace / $disk.Size) * 100)
+            TotalSize  = "$totalGB GB"
+            FreeSpace  = "$freeGB GB"
+            UsedSpace  = "$usedGB GB"
+            PercentFree = "$percentFree %"
         }
     }
     catch {
         return @{
-            Error = "Erreur: $($_.Exception.Message)"
+            Error = "Erreur dans Get-DiskInfo : $($_.Exception.Message)"
         }
     }
 }
 
 function Get-DiskSerial {
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$DriveLetter
     )
-    
+
+    $initResult = Initialize-DiskContext -DriveLetter $DriveLetter
+    if ($initResult -isnot [bool]) {
+        return $initResult
+    }
+
     try {
-        $disk = Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID='$DriveLetter'"
-        
-        if ($null -eq $disk) {
-            return @{
-                Error = "Lecteur '$DriveLetter' introuvable"
-            }
-        }
-        
+        $logical = $script:DiskLogicalInfo
+        $hardware = $script:DiskHardwareInfo
+
+        # SerialNumber matériel via Get-Disk
+        $serialHardware = if ($hardware.SerialNumber) { $hardware.SerialNumber } else { "Non disponible" }
+
         return @{
-            DeviceID = $disk.DeviceID
-            VolumeSerialNumber = if ($disk.VolumeSerialNumber) { $disk.VolumeSerialNumber } else { "Non disponible" }
-            VolumeName = if ($disk.VolumeName) { $disk.VolumeName } else { "Sans nom" }
+            DeviceID              = $logical.DeviceID
+            VolumeName            = if ($logical.VolumeName) { $logical.VolumeName } else { "Sans nom" }
+            VolumeSerialNumber    = if ($logical.VolumeSerialNumber) { $logical.VolumeSerialNumber } else { "Non disponible" }
+            HardwareSerialNumber  = $serialHardware
         }
     }
     catch {
         return @{
-            Error = "Erreur: $($_.Exception.Message)"
+            Error = "Erreur dans Get-DiskSerial : $($_.Exception.Message)"
         }
     }
 }
 
 function Get-FreeSpace {
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$DriveLetter
     )
-    
+
+    $initResult = Initialize-DiskContext -DriveLetter $DriveLetter
+    if ($initResult -isnot [bool]) {
+        return $initResult
+    }
+
     try {
-        $disk = Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID='$DriveLetter'"
-        
-        if ($null -eq $disk) {
-            return @{
-                Error = "Lecteur '$DriveLetter' introuvable"
-            }
-        }
-        
-        $freeGB = [math]::Round($disk.FreeSpace / 1GB, 2)
-        $totalGB = [math]::Round($disk.Size / 1GB, 2)
+        $disk = $script:DiskLogicalInfo
+
+        $freeGB     = [math]::Round($disk.FreeSpace / 1GB, 2)
+        $totalGB    = [math]::Round($disk.Size / 1GB, 2)
         $percentFree = [math]::Round(($disk.FreeSpace / $disk.Size) * 100, 2)
-        
+
+        $status = if ($percentFree -lt 10) { "⚠️ CRITIQUE" }
+                  elseif ($percentFree -lt 20) { "⚠️ ATTENTION" }
+                  else { "✅ OK" }
+
         return @{
-            DeviceID = $disk.DeviceID
-            FreeSpace = "$freeGB GB"
-            TotalSpace = "$totalGB GB"
+            DeviceID    = $disk.DeviceID
+            FreeSpace   = "$freeGB GB"
+            TotalSpace  = "$totalGB GB"
             PercentFree = "$percentFree %"
-            Status = if ($percentFree -lt 10) { "⚠️ CRITIQUE" } 
-                     elseif ($percentFree -lt 20) { "⚠️ ATTENTION" } 
-                     else { "✅ OK" }
+            Status      = $status
         }
     }
     catch {
         return @{
-            Error = "Erreur: $($_.Exception.Message)"
+            Error = "Erreur dans Get-FreeSpace : $($_.Exception.Message)"
         }
     }
 }
 
 function Get-CompleteStats {
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$DriveLetter
     )
-    
+
+    $initResult = Initialize-DiskContext -DriveLetter $DriveLetter
+    if ($initResult -isnot [bool]) {
+        return $initResult
+    }
+
     try {
-        $disk = Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID='$DriveLetter'"
-        
-        if ($null -eq $disk) {
-            return @{
-                Error = "Lecteur '$DriveLetter' introuvable"
-            }
+        $logical  = $script:DiskLogicalInfo
+        $hardware = $script:DiskHardwareInfo
+
+        $totalGB     = [math]::Round($logical.Size / 1GB, 2)
+        $freeGB      = [math]::Round($logical.FreeSpace / 1GB, 2)
+        $usedGB      = [math]::Round(($logical.Size - $logical.FreeSpace) / 1GB, 2)
+        $percentUsed = [math]::Round((($logical.Size - $logical.FreeSpace) / $logical.Size) * 100, 2)
+        $percentFree = [math]::Round(($logical.FreeSpace / $logical.Size) * 100, 2)
+
+        $state = if ($percentFree -lt 10) {
+            "⚠️ CRITIQUE - Espace insuffisant"
         }
-        
-        $totalGB = [math]::Round($disk.Size / 1GB, 2)
-        $freeGB = [math]::Round($disk.FreeSpace / 1GB, 2)
-        $usedGB = [math]::Round(($disk.Size - $disk.FreeSpace) / 1GB, 2)
-        $percentUsed = [math]::Round((($disk.Size - $disk.FreeSpace) / $disk.Size) * 100, 2)
-        $percentFree = [math]::Round(($disk.FreeSpace / $disk.Size) * 100, 2)
-        
+        elseif ($percentFree -lt 20) {
+            "⚠️ ATTENTION - Espace faible"
+        }
+        else {
+            "✅ OK - Espace suffisant"
+        }
+
+        $serialHardware = if ($hardware.SerialNumber) { $hardware.SerialNumber } else { "N/A" }
+
         return @{
-            "Lecteur" = $disk.DeviceID
-            "Nom de volume" = if ($disk.VolumeName) { $disk.VolumeName } else { "Sans nom" }
-            "Système de fichiers" = $disk.FileSystem
-            "Type" = switch ($disk.DriveType) {
-                2 { "Disque amovible" }
-                3 { "Disque local" }
-                4 { "Lecteur réseau" }
-                5 { "CD-ROM" }
-                default { "Inconnu" }
-            }
-            "Taille totale" = "$totalGB GB"
-            "Espace utilisé" = "$usedGB GB ($percentUsed %)"
-            "Espace libre" = "$freeGB GB ($percentFree %)"
-            "Numéro de série" = if ($disk.VolumeSerialNumber) { $disk.VolumeSerialNumber } else { "N/A" }
-            "État" = if ($percentFree -lt 10) { "⚠️ CRITIQUE - Espace insuffisant" } 
-                     elseif ($percentFree -lt 20) { "⚠️ ATTENTION - Espace faible" } 
-                     else { "✅ OK - Espace suffisant" }
+            "Lecteur"              = $logical.DeviceID
+            "Nom de volume"        = if ($logical.VolumeName) { $logical.VolumeName } else { "Sans nom" }
+            "Système de fichiers"  = $logical.FileSystem
+            "Type"                 = switch ($logical.DriveType) {
+                                        2 { "Disque amovible" }
+                                        3 { "Disque local" }
+                                        4 { "Lecteur réseau" }
+                                        5 { "CD-ROM" }
+                                        default { "Inconnu" }
+                                     }
+            "Taille totale"        = "$totalGB GB"
+            "Espace utilisé"       = "$usedGB GB ($percentUsed %)"
+            "Espace libre"         = "$freeGB GB ($percentFree %)"
+            #"Numéro de série (vol)" = if ($logical.VolumeSerialNumber) { $logical.VolumeSerialNumber } else { "N/A" }
+            "Numéro de série (HW)"  = $serialHardware
+            "État"                  = $state
         }
     }
     catch {
         return @{
-            Error = "Erreur lors de la récupération des statistiques: $($_.Exception.Message)"
+            Error = "Erreur dans Get-CompleteStats : $($_.Exception.Message)"
         }
     }
 }

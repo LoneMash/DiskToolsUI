@@ -17,9 +17,9 @@
         "ResultField": "DiskInfo"
       },
       {
-        "Name": "🔢 Numéro de Série",
+        "Name": "🔢 Numéro de Série (HW)",
         "FunctionName": "Get-DiskSerial",
-        "ResultField": "SerialNumber"
+        "ResultField": "HardwareSerialNumber"
       },
       {
         "Name": "💾 Espace Disponible",
