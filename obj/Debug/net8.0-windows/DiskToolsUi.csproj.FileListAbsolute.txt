@@ -28,3 +28,4 @@ C:\Local\HDD-SerialNumber\DiskToolsUi\obj\Debug\net8.0-windows\refint\DiskToolsU
 C:\Local\HDD-SerialNumber\DiskToolsUi\obj\Debug\net8.0-windows\DiskToolsUi.pdb
 C:\Local\HDD-SerialNumber\DiskToolsUi\obj\Debug\net8.0-windows\DiskToolsUi.genruntimeconfig.cache
 C:\Local\HDD-SerialNumber\DiskToolsUi\obj\Debug\net8.0-windows\ref\DiskToolsUi.dll
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\DiskToolsUi.sourcelink.json

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Local\\HDD-SerialNumber\\DiskToolsUi\\DiskToolsUi.csproj": {}
+    "C:\\Local\\HDD-SerialNumber\\DiskToolsUI\\DiskToolsUi.csproj": {}
   },
   "projects": {
-    "C:\\Local\\HDD-SerialNumber\\DiskToolsUi\\DiskToolsUi.csproj": {
+    "C:\\Local\\HDD-SerialNumber\\DiskToolsUI\\DiskToolsUi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Local\\HDD-SerialNumber\\DiskToolsUi\\DiskToolsUi.csproj",
+        "projectUniqueName": "C:\\Local\\HDD-SerialNumber\\DiskToolsUI\\DiskToolsUi.csproj",
         "projectName": "DiskToolsUi",
-        "projectPath": "C:\\Local\\HDD-SerialNumber\\DiskToolsUi\\DiskToolsUi.csproj",
+        "projectPath": "C:\\Local\\HDD-SerialNumber\\DiskToolsUI\\DiskToolsUi.csproj",
         "packagesPath": "C:\\Users\\Famille\\.nuget\\packages\\",
-        "outputPath": "C:\\Local\\HDD-SerialNumber\\DiskToolsUi\\obj\\",
+        "outputPath": "C:\\Local\\HDD-SerialNumber\\DiskToolsUI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Famille\\AppData\\Roaming\\NuGet\\NuGet.Config"
