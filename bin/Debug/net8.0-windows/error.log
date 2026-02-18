@@ -1,0 +1,3 @@
+﻿[2026-02-18 21:27:54] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-18 21:27:54] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-18 21:28:08] ✅ INFO : PowerShellRunner libéré (Dispose).

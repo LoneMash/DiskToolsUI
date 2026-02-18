@@ -1,8 +1,0 @@
-[2026-02-18 21:12:56] INFO: PowerShellRunner initialisé.
-[2026-02-18 21:12:57] INFO: Script chargé avec succès : ./Scripts/DiskFunctions.ps1
-[2026-02-18 21:13:05] INFO: Fonction 'Get-CompleteStats' exécutée avec succès.
-[2026-02-18 21:13:10] INFO: Fonction 'Get-FreeSpace' exécutée avec succès.
-[2026-02-18 21:13:11] INFO: Fonction 'Get-DiskSerial' exécutée avec succès.
-[2026-02-18 21:13:12] INFO: Fonction 'Get-DiskInfo' exécutée avec succès.
-[2026-02-18 21:13:13] INFO: Fonction 'Get-CompleteStats' exécutée avec succès.
-[2026-02-18 21:13:32] INFO: PowerShellRunner libéré (Dispose).
