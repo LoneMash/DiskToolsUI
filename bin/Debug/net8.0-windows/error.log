@@ -1,3 +1,27 @@
 ﻿[2026-02-18 21:27:54] ✅ INFO : PowerShellRunner initialisé.
 [2026-02-18 21:27:54] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
 [2026-02-18 21:28:08] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-18 21:36:56] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-18 21:36:57] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-18 21:36:58] ✅ INFO : Fonction 'Get-AvailableDrives' exécutée avec succès.
+[2026-02-18 21:37:09] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-18 21:37:13] ✅ INFO : Fonction 'Get-DiskInfo' exécutée avec succès.
+[2026-02-18 21:37:23] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-18 21:52:15] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-18 21:52:15] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-18 21:52:17] ✅ INFO : Fonction 'Get-AvailableDrives' exécutée avec succès.
+[2026-02-18 21:52:23] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-18 21:52:30] ✅ INFO : Fonction 'Get-DiskSerial' exécutée avec succès.
+[2026-02-18 21:52:42] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-18 21:57:25] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-18 21:57:26] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-18 21:57:32] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-18 21:57:35] ✅ INFO : Fonction 'Get-DiskInfo' exécutée avec succès.
+[2026-02-18 21:58:21] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-18 21:58:36] ✅ INFO : Fonction 'Get-FreeSpace' exécutée avec succès.
+[2026-02-18 21:58:37] ✅ INFO : Fonction 'Get-DiskSerial' exécutée avec succès.
+[2026-02-18 21:58:44] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-18 21:58:46] ✅ INFO : Fonction 'Get-DiskInfo' exécutée avec succès.
+[2026-02-18 21:59:02] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-18 21:59:08] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-18 22:16:39] ✅ INFO : PowerShellRunner libéré (Dispose).

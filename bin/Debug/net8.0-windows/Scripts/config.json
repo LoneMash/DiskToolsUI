@@ -7,6 +7,7 @@
       {
         "Name": "DriveLetter",
         "Label": "Lettre de lecteur :",
+        "Type": "text",
         "Default": "C:"
       }
     ],
@@ -17,9 +18,9 @@
         "ResultField": "DiskInfo"
       },
       {
-        "Name": "🔢 Numéro de Série (HW)",
+        "Name": "🔢 Numéro de Série",
         "FunctionName": "Get-DiskSerial",
-        "ResultField": "HardwareSerialNumber"
+        "ResultField": "SerialNumber"
       },
       {
         "Name": "💾 Espace Disponible",

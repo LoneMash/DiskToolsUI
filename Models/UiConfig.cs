@@ -1,3 +1,6 @@
+// UiConfig.cs - Version 2.4
+// Changelog : Suppression de SourceFunction et dropdown, retour au TextBox simple
+
 using System.Collections.Generic;
 
 namespace DiskToolsUi.Models
@@ -21,6 +24,7 @@ namespace DiskToolsUi.Models
     {
         public string Name { get; set; } = string.Empty;
         public string Label { get; set; } = string.Empty;
+        public string Type { get; set; } = "text";
         public string Default { get; set; } = string.Empty;
     }
 
