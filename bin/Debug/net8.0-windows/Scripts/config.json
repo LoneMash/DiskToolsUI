@@ -30,11 +30,6 @@
         "Name": "📊 Statistiques Complètes",
         "FunctionName": "Get-CompleteStats",
         "ResultField": "Stats"
-      },
-      {
-        "Name": "📊 Statistiques Complètes",
-        "FunctionName": "Get-CompleteStats",
-        "ResultField": "Stats"
       }
     ]
   },

@@ -1,3 +1,6 @@
+// PowerShellRunner.cs - Version 2.1
+// Changelog : Ajout du LoggerService pour logger les erreurs dans error.log
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,74 +14,88 @@ namespace DiskToolsUi.Services
     public class PowerShellRunner : IDisposable
     {
         private readonly Runspace _runspace;
+        private readonly LoggerService _logger;
         private bool _disposed;
 
-        public PowerShellRunner()
+        public PowerShellRunner(LoggerService? logger = null)
         {
+            // Si aucun logger n'est fourni, on en crée un par défaut
+            _logger = logger ?? new LoggerService();
+
             var initialSessionState = InitialSessionState.CreateDefault();
             initialSessionState.ExecutionPolicy = Microsoft.PowerShell.ExecutionPolicy.Bypass;
-            
+
             _runspace = RunspaceFactory.CreateRunspace(initialSessionState);
             _runspace.Open();
+
+            _logger.LogInfo("PowerShellRunner initialisé.");
         }
 
         public async Task LoadScriptAsync(string scriptPath)
         {
             if (!File.Exists(scriptPath))
             {
-                throw new FileNotFoundException($"PowerShell script not found: {scriptPath}");
+                var msg = $"PowerShell script not found: {scriptPath}";
+                _logger.LogError(msg);
+                throw new FileNotFoundException(msg);
             }
 
             await Task.Run(() =>
             {
                 using var ps = PowerShell.Create();
                 ps.Runspace = _runspace;
-                
+
                 var scriptContent = File.ReadAllText(scriptPath);
                 ps.AddScript(scriptContent);
-                
-                var results = ps.Invoke();
-                
+
+                ps.Invoke();
+
                 if (ps.HadErrors)
                 {
-                    var errors = string.Join(Environment.NewLine, 
+                    var errors = string.Join(Environment.NewLine,
                         ps.Streams.Error.Select(e => e.ToString()));
+                    _logger.LogError($"Erreurs lors du chargement du script '{scriptPath}': {errors}");
                     throw new Exception($"PowerShell script errors: {errors}");
                 }
+
+                _logger.LogInfo($"Script chargé avec succès : {scriptPath}");
             });
         }
 
         public async Task<Dictionary<string, string>> ExecuteFunctionAsync(
-            string functionName, 
+            string functionName,
             Dictionary<string, object> parameters)
         {
             return await Task.Run(() =>
             {
                 using var ps = PowerShell.Create();
                 ps.Runspace = _runspace;
-                
+
                 ps.AddCommand(functionName);
-                
+
                 foreach (var param in parameters)
                 {
                     ps.AddParameter(param.Key, param.Value);
                 }
-                
+
                 var results = ps.Invoke();
-                
+
                 if (ps.HadErrors)
                 {
-                    var errors = string.Join(Environment.NewLine, 
+                    var errors = string.Join(Environment.NewLine,
                         ps.Streams.Error.Select(e => e.ToString()));
+                    _logger.LogError($"Erreurs lors de l'exécution de '{functionName}': {errors}");
                     throw new Exception($"PowerShell execution errors: {errors}");
                 }
 
+                _logger.LogInfo($"Fonction '{functionName}' exécutée avec succès.");
+
                 var resultDict = new Dictionary<string, string>();
-                
+
                 if (results.Count > 0)
                 {
                     var firstResult = results[0];
-                    
+
                     if (firstResult.BaseObject is System.Collections.Hashtable hashtable)
                     {
                         foreach (var key in hashtable.Keys)
@@ -94,7 +111,7 @@ namespace DiskToolsUi.Services
                         }
                     }
                 }
-                
+
                 return resultDict;
             });
         }
@@ -104,6 +121,7 @@ namespace DiskToolsUi.Services
             if (!_disposed)
             {
                 _runspace?.Dispose();
+                _logger.LogInfo("PowerShellRunner libéré (Dispose).");
                 _disposed = true;
             }
         }

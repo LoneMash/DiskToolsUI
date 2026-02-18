@@ -16,26 +16,27 @@ namespace DiskToolsUi.ViewModels
         private readonly ConfigService _configService;
         private readonly PowerShellRunner _psRunner;
         private AppConfig? _appConfig;
-        
+        private readonly LoggerService _logger;   // Nouveau        
         private bool _isLoading;
         private string _driveLetter = "C:";
         private string _statusMessage = "Prêt";
 
         public MainWindowViewModel()
-        {
-            _configService = new ConfigService();
-            _psRunner = new PowerShellRunner();
-            
-            Actions = new ObservableCollection<ActionItem>();
-            Results = new ObservableCollection<ResultItem>();
-            
-            ExecuteActionCommand = new RelayCommand(
-                async param => await ExecuteActionAsync((ActionItem)param!),
-                param => !IsLoading && param is ActionItem
-            );
-            
-            _ = InitializeAsync();
-        }
+{
+    _configService = new ConfigService();
+    _logger = new LoggerService();        // Nouveau
+    _psRunner = new PowerShellRunner(_logger);  // On lui passe le logger
+
+    Actions = new ObservableCollection<ActionItem>();
+    Results = new ObservableCollection<ResultItem>();
+
+    ExecuteActionCommand = new RelayCommand(
+        async param => await ExecuteActionAsync((ActionItem)param!),
+        param => !IsLoading && param is ActionItem
+    );
+
+    _ = InitializeAsync();
+}
 
         public ObservableCollection<ActionItem> Actions { get; }
         public ObservableCollection<ResultItem> Results { get; }
