@@ -1,5 +1,6 @@
-// PowerShellRunner.cs - Version 2.1
-// Changelog : Ajout du LoggerService pour logger les erreurs dans error.log
+// PowerShellRunner.cs - Version 2.2
+// Changelog : Utilisation de AppContext.BaseDirectory pour résoudre les chemins relatifs
+//             évite les erreurs quand l'app est lancée depuis un raccourci ou bat
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,6 @@ namespace DiskToolsUi.Services
 
         public PowerShellRunner(LoggerService? logger = null)
         {
-            // Si aucun logger n'est fourni, on en crée un par défaut
             _logger = logger ?? new LoggerService();
 
             var initialSessionState = InitialSessionState.CreateDefault();
@@ -33,6 +33,10 @@ namespace DiskToolsUi.Services
 
         public async Task LoadScriptAsync(string scriptPath)
         {
+            // Résolution du chemin relatif à partir du dossier de l'exe
+            if (!Path.IsPathRooted(scriptPath))
+                scriptPath = Path.Combine(AppContext.BaseDirectory, scriptPath);
+
             if (!File.Exists(scriptPath))
             {
                 var msg = $"PowerShell script not found: {scriptPath}";
@@ -74,9 +78,7 @@ namespace DiskToolsUi.Services
                 ps.AddCommand(functionName);
 
                 foreach (var param in parameters)
-                {
                     ps.AddParameter(param.Key, param.Value);
-                }
 
                 var results = ps.Invoke();
 
@@ -99,16 +101,12 @@ namespace DiskToolsUi.Services
                     if (firstResult.BaseObject is System.Collections.Hashtable hashtable)
                     {
                         foreach (var key in hashtable.Keys)
-                        {
                             resultDict[key.ToString()!] = hashtable[key]?.ToString() ?? string.Empty;
-                        }
                     }
                     else
                     {
                         foreach (var prop in firstResult.Properties)
-                        {
                             resultDict[prop.Name] = prop.Value?.ToString() ?? string.Empty;
-                        }
                     }
                 }
 

@@ -79,7 +79,9 @@ namespace DiskToolsUi.ViewModels
 
                 // 2. Charger le script PowerShell
                 StatusMessage = "Chargement du script PowerShell...";
-                await _psRunner.LoadScriptAsync(_appConfig.PowerShell.FunctionsScriptPath);
+                // Dans InitializeAsync(), ligne de chargement du script :
+                await _psRunner.LoadScriptAsync(_appConfig.PowerShell.ScriptPath);
+
 
                 // 3. Construire les paramètres UI (TextBox uniquement)
                 foreach (var paramConfig in _appConfig.UI.Parameters)

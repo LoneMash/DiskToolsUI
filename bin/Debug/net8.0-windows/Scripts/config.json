@@ -35,6 +35,6 @@
     ]
   },
   "PowerShell": {
-    "FunctionsScriptPath": "./Scripts/DiskFunctions.ps1"
+    "FunctionsScriptPath": "Scripts/PowerShell_Base.ps1"
   }
 }

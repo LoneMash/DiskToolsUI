@@ -59,3 +59,76 @@
    at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
    at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
 --------------------------------------------------------------------------------
+[2026-02-19 18:33:21] 💥 EXCEPTION (niveau 0)
+Type       : System.ArgumentNullException
+Message    : Value cannot be null. (Parameter 'path1')
+StackTrace :    at System.ArgumentNullException.Throw(String paramName)
+   at System.IO.Path.Combine(String path1, String path2)
+   at System.Management.Automation.PSSnapInReader.ReadEnginePSSnapIns()
+   at System.Management.Automation.Runspaces.InitialSessionState.CreateDefault()
+   at DiskToolsUi.Services.PowerShellRunner..ctor(LoggerService logger) in C:\Local\HDD-SerialNumber\DiskToolsUI\Services\PowerShellRunner.cs:line 25
+   at DiskToolsUi.ViewModels.MainWindowViewModel..ctor() in C:\Local\HDD-SerialNumber\DiskToolsUI\ViewModels\MainWindowViewModel.cs:line 32
+   at DiskToolsUi.MainWindow..ctor() in C:\Local\HDD-SerialNumber\DiskToolsUI\MainWindow.xaml.cs:line 19
+--------------------------------------------------------------------------------
+[2026-02-19 18:35:03] 💥 FATAL (DispatcherUnhandledException)
+  Message    : L'invocation du constructeur sur le type 'DiskToolsUi.MainWindow' qui correspond aux contraintes de liaison spécifiées a levé une exception.
+  StackTrace :    at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
+   at System.Windows.Application.LoadBamlStreamWithSyncInfo(Stream stream, ParserContext pc)
+   at System.Windows.Application.DoStartup()
+   at System.Windows.Application.<.ctor>b__1_0(Object unused)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+--------------------------------------------------------------------------------
+[2026-02-19 18:35:14] 💥 EXCEPTION (niveau 0)
+Type       : System.ArgumentNullException
+Message    : Value cannot be null. (Parameter 'path1')
+StackTrace :    at System.ArgumentNullException.Throw(String paramName)
+   at System.IO.Path.Combine(String path1, String path2)
+   at System.Management.Automation.PSSnapInReader.ReadEnginePSSnapIns()
+   at System.Management.Automation.Runspaces.InitialSessionState.CreateDefault()
+   at DiskToolsUi.Services.PowerShellRunner..ctor(LoggerService logger) in C:\Local\HDD-SerialNumber\DiskToolsUI\Services\PowerShellRunner.cs:line 25
+   at DiskToolsUi.ViewModels.MainWindowViewModel..ctor() in C:\Local\HDD-SerialNumber\DiskToolsUI\ViewModels\MainWindowViewModel.cs:line 32
+   at DiskToolsUi.MainWindow..ctor() in C:\Local\HDD-SerialNumber\DiskToolsUI\MainWindow.xaml.cs:line 19
+--------------------------------------------------------------------------------
+[2026-02-19 18:35:16] 💥 FATAL (DispatcherUnhandledException)
+  Message    : L'invocation du constructeur sur le type 'DiskToolsUi.MainWindow' qui correspond aux contraintes de liaison spécifiées a levé une exception.
+  StackTrace :    at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
+   at System.Windows.Application.LoadBamlStreamWithSyncInfo(Stream stream, ParserContext pc)
+   at System.Windows.Application.DoStartup()
+   at System.Windows.Application.<.ctor>b__1_0(Object unused)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+--------------------------------------------------------------------------------
+[2026-02-19 18:37:25] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-19 18:37:25] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-19 18:37:33] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-19 18:37:34] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-19 18:41:40] 💥 EXCEPTION (niveau 0)
+Type       : System.ArgumentNullException
+Message    : Value cannot be null. (Parameter 'path1')
+StackTrace :    at System.ArgumentNullException.Throw(String paramName)
+   at System.IO.Path.Combine(String path1, String path2)
+   at System.Management.Automation.PSSnapInReader.ReadEnginePSSnapIns()
+   at System.Management.Automation.Runspaces.InitialSessionState.CreateDefault()
+   at DiskToolsUi.Services.PowerShellRunner..ctor(LoggerService logger) in C:\Local\HDD-SerialNumber\DiskToolsUI\Services\PowerShellRunner.cs:line 25
+   at DiskToolsUi.ViewModels.MainWindowViewModel..ctor() in C:\Local\HDD-SerialNumber\DiskToolsUI\ViewModels\MainWindowViewModel.cs:line 32
+   at DiskToolsUi.MainWindow..ctor() in C:\Local\HDD-SerialNumber\DiskToolsUI\MainWindow.xaml.cs:line 19
+--------------------------------------------------------------------------------
+[2026-02-19 18:41:42] 💥 FATAL (DispatcherUnhandledException)
+  Message    : L'invocation du constructeur sur le type 'DiskToolsUi.MainWindow' qui correspond aux contraintes de liaison spécifiées a levé une exception.
+  StackTrace :    at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
+   at System.Windows.Application.LoadBamlStreamWithSyncInfo(Stream stream, ParserContext pc)
+   at System.Windows.Application.DoStartup()
+   at System.Windows.Application.<.ctor>b__1_0(Object unused)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+--------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-// UiConfig.cs - Version 2.4
-// Changelog : Suppression de SourceFunction et dropdown, retour au TextBox simple
+// UiConfig.cs - Version 2.5
+// Changelog : FunctionsScriptPath renommé en ScriptPath pour plus de généricité
 
 using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ namespace DiskToolsUi.Models
 
     public class UiConfig
     {
-        public string Title { get; set; } = "Disk Tools UI";
+        public string Title { get; set; } = "PowerShell UI";
         public int WindowWidth { get; set; } = 900;
         public int WindowHeight { get; set; } = 600;
         public List<ParameterConfig> Parameters { get; set; } = new();
@@ -37,6 +37,7 @@ namespace DiskToolsUi.Models
 
     public class PowerShellConfig
     {
-        public string FunctionsScriptPath { get; set; } = "./Scripts/DiskFunctions.ps1";
+        // Nom générique : peut pointer vers n'importe quel script PS1
+        public string ScriptPath { get; set; } = "Scripts/PowerShell_Base.ps1";
     }
 }

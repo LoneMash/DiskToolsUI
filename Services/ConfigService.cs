@@ -1,3 +1,7 @@
+// ConfigService.cs - Version 2.1
+// Changelog : Utilisation de AppContext.BaseDirectory pour les chemins relatifs
+//             évite les erreurs quand l'app est lancée depuis un raccourci ou bat
+
 using System;
 using System.IO;
 using System.Text.Json;
@@ -10,9 +14,10 @@ namespace DiskToolsUi.Services
     {
         private readonly string _configPath;
 
-        public ConfigService(string configPath = "./Scripts/config.json")
+        public ConfigService(string configPath = "Scripts/config.json")
         {
-            _configPath = configPath;
+            // Toujours relatif au dossier de l'exe, peu importe d'où on lance l'app
+            _configPath = Path.Combine(AppContext.BaseDirectory, configPath);
         }
 
         public async Task<AppConfig> LoadConfigAsync()
@@ -20,9 +25,8 @@ namespace DiskToolsUi.Services
             try
             {
                 if (!File.Exists(_configPath))
-                {
-                    throw new FileNotFoundException($"Configuration file not found: {_configPath}");
-                }
+                    throw new FileNotFoundException(
+                        $"Configuration file not found: {_configPath}");
 
                 var jsonContent = await File.ReadAllTextAsync(_configPath);
                 var config = JsonSerializer.Deserialize<AppConfig>(jsonContent, new JsonSerializerOptions

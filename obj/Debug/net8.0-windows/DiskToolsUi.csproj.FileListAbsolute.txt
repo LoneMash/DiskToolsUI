@@ -209,7 +209,6 @@ C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\Modules\PSDiagnostics\PSDiagnostics.psd1
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\Modules\PSDiagnostics\PSDiagnostics.psm1
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\Scripts\config.json
-C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\Scripts\DiskFunctions.ps1
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\JetBrains.Annotations.dll
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\Json.More.dll
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\JsonPointer.Net.dll
@@ -374,3 +373,4 @@ C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Runtime.Caching.dll
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Speech.dll
+C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\Scripts\PowerShell_Base.ps1

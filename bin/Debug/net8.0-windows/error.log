@@ -47,3 +47,12 @@
 [2026-02-19 18:18:06] ✅ INFO : PowerShellRunner initialisé.
 [2026-02-19 18:18:07] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
 [2026-02-19 18:18:28] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-19 18:35:49] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-19 18:35:50] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-19 18:35:55] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-19 18:35:58] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-19 21:09:48] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-19 21:09:49] ✅ INFO : Script chargé avec succès : C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\Scripts/PowerShell_Base.ps1
+[2026-02-19 21:09:56] ✅ INFO : Fonction 'Get-DiskSerial' exécutée avec succès.
+[2026-02-19 21:09:57] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-19 21:10:05] ✅ INFO : PowerShellRunner libéré (Dispose).
