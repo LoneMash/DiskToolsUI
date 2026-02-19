@@ -1,0 +1,7 @@
+# Ignorer tous les fichiers .log
+*.log
+# Ignorer le répertoire build
+build/
+# Ignorer un fichier spécifique
+
+# Ne pas ignorer un fichier particulier
