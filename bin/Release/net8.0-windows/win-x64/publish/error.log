@@ -1,0 +1,61 @@
+﻿[2026-02-19 17:10:35] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-19 17:10:35] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-19 17:10:43] ✅ INFO : Fonction 'Get-CompleteStats' exécutée avec succès.
+[2026-02-19 17:10:45] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-19 17:14:59] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-19 17:14:59] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-19 17:15:01] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-19 17:22:26] 💥 FATAL (DispatcherUnhandledException)
+  Message    : L'invocation du constructeur sur le type 'DiskToolsUi.MainWindow' qui correspond aux contraintes de liaison spécifiées a levé une exception.
+  StackTrace :    at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
+   at System.Windows.Application.LoadBamlStreamWithSyncInfo(Stream stream, ParserContext pc)
+   at System.Windows.Application.DoStartup()
+   at System.Windows.Application.<.ctor>b__1_0(Object unused)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+--------------------------------------------------------------------------------
+[2026-02-19 17:26:31] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-19 17:26:32] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-19 17:26:35] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-19 17:27:47] 💥 FATAL (DispatcherUnhandledException)
+  Message    : L'invocation du constructeur sur le type 'DiskToolsUi.MainWindow' qui correspond aux contraintes de liaison spécifiées a levé une exception.
+  StackTrace :    at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
+   at System.Windows.Application.LoadBamlStreamWithSyncInfo(Stream stream, ParserContext pc)
+   at System.Windows.Application.DoStartup()
+   at System.Windows.Application.<.ctor>b__1_0(Object unused)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+--------------------------------------------------------------------------------
+[2026-02-19 18:19:09] ✅ INFO : PowerShellRunner initialisé.
+[2026-02-19 18:19:09] ✅ INFO : Script chargé avec succès : ./Scripts/DiskFunctions.ps1
+[2026-02-19 18:19:11] ✅ INFO : PowerShellRunner libéré (Dispose).
+[2026-02-19 18:20:38] 💥 FATAL (DispatcherUnhandledException)
+  Message    : L'invocation du constructeur sur le type 'DiskToolsUi.MainWindow' qui correspond aux contraintes de liaison spécifiées a levé une exception.
+  StackTrace :    at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
+   at System.Windows.Application.LoadBamlStreamWithSyncInfo(Stream stream, ParserContext pc)
+   at System.Windows.Application.DoStartup()
+   at System.Windows.Application.<.ctor>b__1_0(Object unused)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+--------------------------------------------------------------------------------
+[2026-02-19 18:22:37] 💥 FATAL (DispatcherUnhandledException)
+  Message    : L'invocation du constructeur sur le type 'DiskToolsUi.MainWindow' qui correspond aux contraintes de liaison spécifiées a levé une exception.
+  StackTrace :    at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
+   at System.Windows.Application.LoadBamlStreamWithSyncInfo(Stream stream, ParserContext pc)
+   at System.Windows.Application.DoStartup()
+   at System.Windows.Application.<.ctor>b__1_0(Object unused)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+--------------------------------------------------------------------------------

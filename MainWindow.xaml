@@ -11,9 +11,9 @@
         ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
+        <!-- TypeToVisibilityConverter supprimé car dropdown retiré -->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <converters:TypeToVisibilityConverter x:Key="TypeToVisibilityConverter"/>
-        
+
         <Style x:Key="ModernButton" TargetType="Button">
             <Setter Property="Background" Value="#2D2D30"/>
             <Setter Property="Foreground" Value="#F1F1F1"/>
@@ -65,7 +65,8 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
                         <TextBlock Text="⚡" FontSize="20" Foreground="White" 
                                    VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBlock Text="Disk Tools UI" FontSize="14" FontWeight="SemiBold" 
+                        <!-- Titre dynamique depuis config.json via WindowTitle -->
+                        <TextBlock Text="{Binding WindowTitle}" FontSize="14" FontWeight="SemiBold" 
                                    Foreground="White" VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,5,0">
@@ -83,7 +84,8 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
                                                 <Border Background="{TemplateBinding Background}">
-                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <ContentPresenter HorizontalAlignment="Center"
+                                                                      VerticalAlignment="Center"/>
                                                 </Border>
                                             </ControlTemplate>
                                         </Setter.Value>
@@ -112,7 +114,6 @@
                     <StackPanel Margin="15">
                         <TextBlock Text="ACTIONS" FontSize="12" FontWeight="Bold" 
                                    Foreground="#808080" Margin="0,0,0,10"/>
-                        
                         <ItemsControl ItemsSource="{Binding Actions}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -138,58 +139,54 @@
                     </Grid.RowDefinitions>
 
                     <!-- ZONE PARAMÈTRES - TextBox simple, dynamique depuis config.json -->
-<Border Grid.Row="0" Background="#2D2D30" CornerRadius="4"
-        Padding="15" Margin="0,0,0,15" BorderBrush="#3F3F46" BorderThickness="1">
-    <StackPanel>
-        <TextBlock Text="PARAMÈTRES" FontSize="12" FontWeight="Bold"
-                   Foreground="#808080" Margin="0,0,0,10"/>
-
-        <ItemsControl ItemsSource="{Binding Parameters}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                        <TextBlock Text="{Binding Label}" Foreground="#F1F1F1"
-                                   VerticalAlignment="Center" Width="130" Margin="0,0,10,0"/>
-                        <TextBox Text="{Binding CurrentValue, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="200" Height="30"
-                                 Background="#3F3F46" Foreground="#F1F1F1"
-                                 BorderBrush="#007ACC" BorderThickness="1"
-                                 Padding="8,5" FontSize="13"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </StackPanel>
-</Border>
+                    <Border Grid.Row="0" Background="#2D2D30" CornerRadius="4"
+                            Padding="15" Margin="0,0,0,15" BorderBrush="#3F3F46" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="PARAMÈTRES" FontSize="12" FontWeight="Bold"
+                                       Foreground="#808080" Margin="0,0,0,10"/>
+                            <ItemsControl ItemsSource="{Binding Parameters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="{Binding Label}" Foreground="#F1F1F1"
+                                                       VerticalAlignment="Center" Width="130" Margin="0,0,10,0"/>
+                                            <TextBox Text="{Binding CurrentValue, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="200" Height="30"
+                                                     Background="#3F3F46" Foreground="#F1F1F1"
+                                                     BorderBrush="#007ACC" BorderThickness="1"
+                                                     Padding="8,5" FontSize="13"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
 
                     <!-- ZONE RÉSULTATS -->
                     <Border Grid.Row="1" Background="#2D2D30" CornerRadius="4" 
                             Padding="15" BorderBrush="#3F3F46" BorderThickness="1">
-                        <Grid>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <TextBlock Text="RÉSULTATS" FontSize="12" FontWeight="Bold" 
-                                               Foreground="#808080" Margin="0,0,0,10"/>
-                                    
-                                    <ItemsControl ItemsSource="{Binding Results}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Margin="0,5">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="150"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding Label}" 
-                                                               Foreground="#CCCCCC" FontWeight="SemiBold"/>
-                                                    <TextBlock Grid.Column="1" Text="{Binding Value}" 
-                                                               Foreground="#F1F1F1" TextWrapping="Wrap"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Grid>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="RÉSULTATS" FontSize="12" FontWeight="Bold" 
+                                           Foreground="#808080" Margin="0,0,0,10"/>
+                                <ItemsControl ItemsSource="{Binding Results}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="150"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Label}" 
+                                                           Foreground="#CCCCCC" FontWeight="SemiBold"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Value}" 
+                                                           Foreground="#F1F1F1" TextWrapping="Wrap"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
                     </Border>
                 </Grid>
             </Grid>

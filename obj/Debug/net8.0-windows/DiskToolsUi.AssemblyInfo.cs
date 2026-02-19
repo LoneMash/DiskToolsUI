@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DiskToolsUi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a98d6dd4050d3622a797d1fcd5e1ea1455058a79")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6afbd9b2b593db2af4b865a62b4061650a01820d")]
 [assembly: System.Reflection.AssemblyProductAttribute("DiskToolsUi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DiskToolsUi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
