@@ -31,6 +31,11 @@
         "Name": "📊 Statistiques Complètes",
         "FunctionName": "Get-CompleteStats",
         "ResultField": "Stats"
+      },
+      {
+       "Name": "🖥️ Tous les disques",
+       "FunctionName": "Get-AllDisks",
+       "ResultField": "AllDisks"
       }
     ]
   },

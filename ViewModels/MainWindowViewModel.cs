@@ -1,5 +1,7 @@
 // MainWindowViewModel.cs - Version 2.4
 // Changelog : Suppression du dropdown et de LoadAvailableDrivesAsync, TextBox simple
+// MainWindowViewModel.cs - Version 2.5
+// Changelog : ExecuteActionAsync adapté pour List<ResultItem> retourné par PowerShellRunner
 
 using System;
 using System.Collections.Generic;
@@ -122,44 +124,38 @@ namespace DiskToolsUi.ViewModels
         }
 
         private async Task ExecuteActionAsync(ActionItem action)
-        {
-            try
-            {
-                IsLoading     = true;
-                StatusMessage = $"Exécution : {action.Name}...";
-                Results.Clear();
+{
+    try
+    {
+        IsLoading     = true;
+        StatusMessage = $"Exécution : {action.Name}...";
+        Results.Clear();
 
-                // Passer tous les paramètres courants à la fonction PS
-                var parameters = Parameters.ToDictionary(
-                    p => p.Name,
-                    p => (object)p.CurrentValue
-                );
+        var parameters = Parameters.ToDictionary(
+            p => p.Name,
+            p => (object)p.CurrentValue
+        );
 
-                var result = await _psRunner.ExecuteFunctionAsync(action.FunctionName, parameters);
+        // Retourne maintenant List<ResultItem> au lieu de Dictionary
+        var resultItems = await _psRunner.ExecuteFunctionAsync(action.FunctionName, parameters);
 
-                foreach (var kvp in result)
-                {
-                    Results.Add(new ResultItem
-                    {
-                        Label = kvp.Key,
-                        Value = kvp.Value
-                    });
-                }
+        foreach (var item in resultItems)
+            Results.Add(item);
 
-                StatusMessage = $"Terminé : {action.Name}";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Erreur dans ExecuteActionAsync ({action.Name})", ex);
-                StatusMessage = $"Erreur : {ex.Message}";
-                MessageBox.Show($"Erreur lors de l'exécution :\n{ex.Message}",
-                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
+        StatusMessage = $"Terminé : {action.Name}";
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError($"Erreur dans ExecuteActionAsync ({action.Name})", ex);
+        StatusMessage = $"Erreur : {ex.Message}";
+        MessageBox.Show($"Erreur lors de l'exécution :\n{ex.Message}",
+            "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+    finally
+    {
+        IsLoading = false;
+    }
+}
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

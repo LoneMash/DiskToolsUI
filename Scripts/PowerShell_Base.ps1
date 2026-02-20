@@ -194,4 +194,21 @@ function Get-CompleteStats {
     catch {
         return @{ Error = "Erreur dans Get-CompleteStats : $($_.Exception.Message)" }
     }
+    
 }
+function Get-AllDisks {
+    $disks = Get-WmiObject -Class Win32_LogicalDisk | Where-Object { $_.DriveType -in @(2,3,4) }
+
+    $result = foreach ($disk in $disks) {
+        [PSCustomObject]@{
+            Lecteur    = $disk.DeviceID
+            Nom        = if ($disk.VolumeName) { $disk.VolumeName } else { "Sans nom" }
+            Taille     = "{0:N1} GB" -f ($disk.Size / 1GB)
+            Libre      = "{0:N1} GB" -f ($disk.FreeSpace / 1GB)
+            Système    = $disk.FileSystem
+        }
+    }
+
+    return $result
+}
+

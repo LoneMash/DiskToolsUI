@@ -1,3 +1,6 @@
+// BoolToVisibilityConverter.cs - Version 1.1
+// Changelog : Ajout de BoolToVisibilityInverseConverter pour masquer quand IsTable = true
+
 using System;
 using System.Globalization;
 using System.Windows;
@@ -8,17 +11,18 @@ namespace DiskToolsUi.Converters
     public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is bool boolValue)
-            {
-                return boolValue ? Visibility.Visible : Visibility.Collapsed;
-            }
-            return Visibility.Collapsed;
-        }
+            => value is bool b && b ? Visibility.Visible : Visibility.Collapsed;
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => throw new NotImplementedException();
+    }
+
+    public class BoolToVisibilityInverseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is bool b && b ? Visibility.Collapsed : Visibility.Visible;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
     }
 }

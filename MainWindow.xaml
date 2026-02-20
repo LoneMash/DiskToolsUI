@@ -13,6 +13,8 @@
     <Window.Resources>
         <!-- TypeToVisibilityConverter supprimé car dropdown retiré -->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:BoolToVisibilityInverseConverter x:Key="BoolToVisibilityInverseConverter"/>
+
 
         <Style x:Key="ModernButton" TargetType="Button">
             <Setter Property="Background" Value="#2D2D30"/>
@@ -163,31 +165,88 @@
                     </Border>
 
                     <!-- ZONE RÉSULTATS -->
-                    <Border Grid.Row="1" Background="#2D2D30" CornerRadius="4" 
-                            Padding="15" BorderBrush="#3F3F46" BorderThickness="1">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel>
-                                <TextBlock Text="RÉSULTATS" FontSize="12" FontWeight="Bold" 
-                                           Foreground="#808080" Margin="0,0,0,10"/>
-                                <ItemsControl ItemsSource="{Binding Results}">
+                    <!-- ZONE RÉSULTATS - Support clé/valeur ET tableau -->
+<Border Grid.Row="1" Background="#2D2D30" CornerRadius="4"
+        Padding="15" BorderBrush="#3F3F46" BorderThickness="1">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <TextBlock Text="RÉSULTATS" FontSize="12" FontWeight="Bold"
+                       Foreground="#808080" Margin="0,0,0,10"/>
+
+            <ItemsControl ItemsSource="{Binding Results}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+
+                            <!-- MODE CLÉ/VALEUR (IsTable = false) -->
+                            <Grid Margin="0,4"
+                                  Visibility="{Binding IsTable, 
+                                               Converter={StaticResource BoolToVisibilityInverseConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Label}"
+                                           Foreground="#CCCCCC" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Value}"
+                                           Foreground="#F1F1F1" TextWrapping="Wrap"/>
+                            </Grid>
+
+                            <!-- MODE TABLEAU (IsTable = true) -->
+                            <StackPanel Visibility="{Binding IsTable, 
+                                                     Converter={StaticResource BoolToVisibilityConverter}}"
+                                        Margin="0,4">
+                                <!-- En-têtes colonnes -->
+                                <ItemsControl ItemsSource="{Binding Columns}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Rows="1"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid Margin="0,5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="150"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{Binding Label}" 
-                                                           Foreground="#CCCCCC" FontWeight="SemiBold"/>
-                                                <TextBlock Grid.Column="1" Text="{Binding Value}" 
-                                                           Foreground="#F1F1F1" TextWrapping="Wrap"/>
-                                            </Grid>
+                                            <Border Background="#007ACC" Padding="8,4" Margin="1,0">
+                                                <TextBlock Text="{Binding}" Foreground="White"
+                                                           FontWeight="Bold" FontSize="12"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Lignes du tableau -->
+                                <ItemsControl ItemsSource="{Binding Rows}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#3F3F46" BorderThickness="0,0,0,1">
+                                                <ItemsControl ItemsSource="{Binding Cells}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <UniformGrid Rows="1"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding}"
+                                                                       Foreground="#F1F1F1"
+                                                                       Padding="8,4" Margin="1,0"
+                                                                       TextWrapping="Wrap"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </StackPanel>
-                        </ScrollViewer>
-                    </Border>
+
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Border>
+
                 </Grid>
             </Grid>
 

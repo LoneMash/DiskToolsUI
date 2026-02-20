@@ -181,7 +181,7 @@ C:\Users\Famille\Desktop\DiskTool\runtimes\win\lib\net8.0\Modules\Microsoft.WSMa
 C:\Users\Famille\Desktop\DiskTool\runtimes\win\lib\net8.0\Modules\PSDiagnostics\PSDiagnostics.psd1
 C:\Users\Famille\Desktop\DiskTool\runtimes\win\lib\net8.0\Modules\PSDiagnostics\PSDiagnostics.psm1
 C:\Users\Famille\Desktop\DiskTool\Scripts\config.json
-C:\Users\Famille\Desktop\DiskTool\Scripts\DiskFunctions.ps1
+C:\Users\Famille\Desktop\DiskTool\Scripts\PowerShell_Base.ps1
 C:\Users\Famille\Desktop\DiskTool\DiskToolsUi.dll
 C:\Users\Famille\Desktop\DiskTool\DiskToolsUi.deps.json
 C:\Users\Famille\Desktop\DiskTool\DiskToolsUi.runtimeconfig.json

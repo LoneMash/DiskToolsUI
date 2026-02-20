@@ -180,7 +180,6 @@ C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\runtime
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\runtimes\win\lib\net8.0\Modules\PSDiagnostics\PSDiagnostics.psd1
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\runtimes\win\lib\net8.0\Modules\PSDiagnostics\PSDiagnostics.psm1
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\Scripts\config.json
-C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\Scripts\DiskFunctions.ps1
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\DiskToolsUi.exe
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\DiskToolsUi.deps.json
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\DiskToolsUi.runtimeconfig.json
@@ -315,3 +314,4 @@ C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Release\net8.0-windows\win-x64\refint\
 C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Release\net8.0-windows\win-x64\DiskToolsUi.pdb
 C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Release\net8.0-windows\win-x64\DiskToolsUi.genruntimeconfig.cache
 C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Release\net8.0-windows\win-x64\ref\DiskToolsUi.dll
+C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Release\net8.0-windows\win-x64\Scripts\PowerShell_Base.ps1
