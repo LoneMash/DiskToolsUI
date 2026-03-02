@@ -164,88 +164,106 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- ZONE RÉSULTATS -->
-                    <!-- ZONE RÉSULTATS - Support clé/valeur ET tableau -->
+                    <!-- ZONE RÉSULTATS - Support clé/valeur, tableau ET export CSV -->
 <Border Grid.Row="1" Background="#2D2D30" CornerRadius="4"
         Padding="15" BorderBrush="#3F3F46" BorderThickness="1">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- EN-TÊTE RÉSULTATS + BOUTON EXPORT -->
+        <Grid Grid.Row="0" Margin="0,0,0,10">
             <TextBlock Text="RÉSULTATS" FontSize="12" FontWeight="Bold"
-                       Foreground="#808080" Margin="0,0,0,10"/>
+                       Foreground="#808080" VerticalAlignment="Center"/>
+            <Button Content="📥 Exporter CSV"
+                    Command="{Binding ExportCsvCommand}"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource ModernButton}"
+                    Padding="12,4" FontSize="12"
+                    Visibility="{Binding HasResults, 
+                                 Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </Grid>
 
-            <ItemsControl ItemsSource="{Binding Results}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
+        <!-- LISTE DES RÉSULTATS -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding Results}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
 
-                            <!-- MODE CLÉ/VALEUR (IsTable = false) -->
-                            <Grid Margin="0,4"
-                                  Visibility="{Binding IsTable, 
-                                               Converter={StaticResource BoolToVisibilityInverseConverter}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="180"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Label}"
-                                           Foreground="#CCCCCC" FontWeight="SemiBold"/>
-                                <TextBlock Grid.Column="1" Text="{Binding Value}"
-                                           Foreground="#F1F1F1" TextWrapping="Wrap"/>
-                            </Grid>
+                                <!-- MODE CLÉ/VALEUR (IsTable = false) -->
+                                <Grid Margin="0,4"
+                                      Visibility="{Binding IsTable,
+                                                   Converter={StaticResource BoolToVisibilityInverseConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Label}"
+                                               Foreground="#CCCCCC" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Value}"
+                                               Foreground="#F1F1F1" TextWrapping="Wrap"/>
+                                </Grid>
 
-                            <!-- MODE TABLEAU (IsTable = true) -->
-                            <StackPanel Visibility="{Binding IsTable, 
-                                                     Converter={StaticResource BoolToVisibilityConverter}}"
-                                        Margin="0,4">
-                                <!-- En-têtes colonnes -->
-                                <ItemsControl ItemsSource="{Binding Columns}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Rows="1"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="#007ACC" Padding="8,4" Margin="1,0">
-                                                <TextBlock Text="{Binding}" Foreground="White"
-                                                           FontWeight="Bold" FontSize="12"/>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <!-- MODE TABLEAU (IsTable = true) -->
+                                <StackPanel Visibility="{Binding IsTable,
+                                                         Converter={StaticResource BoolToVisibilityConverter}}"
+                                            Margin="0,4">
+                                    <!-- En-têtes colonnes -->
+                                    <ItemsControl ItemsSource="{Binding Columns}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Rows="1"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#007ACC" Padding="8,4" Margin="1,0">
+                                                    <TextBlock Text="{Binding}" Foreground="White"
+                                                               FontWeight="Bold" FontSize="12"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
 
-                                <!-- Lignes du tableau -->
-                                <ItemsControl ItemsSource="{Binding Rows}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="#3F3F46" BorderThickness="0,0,0,1">
-                                                <ItemsControl ItemsSource="{Binding Cells}">
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <UniformGrid Rows="1"/>
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding}"
-                                                                       Foreground="#F1F1F1"
-                                                                       Padding="8,4" Margin="1,0"
-                                                                       TextWrapping="Wrap"/>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                    <!-- Lignes du tableau -->
+                                    <ItemsControl ItemsSource="{Binding Rows}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="#3F3F46" BorderThickness="0,0,0,1">
+                                                    <ItemsControl ItemsSource="{Binding Cells}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <UniformGrid Rows="1"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding}"
+                                                                           Foreground="#F1F1F1"
+                                                                           Padding="8,4" Margin="1,0"
+                                                                           TextWrapping="Wrap"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
                             </StackPanel>
-
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-    </ScrollViewer>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Border>
+
 
                 </Grid>
             </Grid>

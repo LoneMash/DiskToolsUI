@@ -1,16 +1,16 @@
-// MainWindowViewModel.cs - Version 2.4
-// Changelog : Suppression du dropdown et de LoadAvailableDrivesAsync, TextBox simple
-// MainWindowViewModel.cs - Version 2.5
-// Changelog : ExecuteActionAsync adapté pour List<ResultItem> retourné par PowerShellRunner
+// MainWindowViewModel.cs - Version 2.6
+// Changelog : Ajout ExportCsvCommand + HasResults pour affichage conditionnel du bouton
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Win32;
 using DiskToolsUi.Models;
 using DiskToolsUi.Services;
 
@@ -21,17 +21,21 @@ namespace DiskToolsUi.ViewModels
         private readonly ConfigService _configService;
         private readonly PowerShellRunner _psRunner;
         private readonly LoggerService _logger;
+        private readonly CsvExportService _csvExport;
         private AppConfig? _appConfig;
 
         private bool _isLoading;
-        private string _windowTitle = "Disk Tools UI";
+        private bool _hasResults;
+        private string _windowTitle = "PowerShell UI";
         private string _statusMessage = "Initialisation...";
+        private string _lastActionName = string.Empty;
 
         public MainWindowViewModel()
         {
             _configService = new ConfigService();
             _logger        = new LoggerService();
             _psRunner      = new PowerShellRunner(_logger);
+            _csvExport     = new CsvExportService();
 
             Actions    = new ObservableCollection<ActionItem>();
             Results    = new ObservableCollection<ResultItem>();
@@ -42,6 +46,11 @@ namespace DiskToolsUi.ViewModels
                 param => !IsLoading && param is ActionItem
             );
 
+            ExportCsvCommand = new RelayCommand(
+                _ => ExportToCsv(),
+                _ => HasResults && !IsLoading
+            );
+
             _ = InitializeAsync();
         }
 
@@ -49,11 +58,29 @@ namespace DiskToolsUi.ViewModels
         public ObservableCollection<ResultItem>    Results    { get; }
         public ObservableCollection<ParameterItem> Parameters { get; }
         public RelayCommand ExecuteActionCommand { get; }
+        public RelayCommand ExportCsvCommand { get; }
 
         public bool IsLoading
         {
             get => _isLoading;
-            set { _isLoading = value; OnPropertyChanged(); ExecuteActionCommand.RaiseCanExecuteChanged(); }
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+                ExecuteActionCommand.RaiseCanExecuteChanged();
+                ExportCsvCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public bool HasResults
+        {
+            get => _hasResults;
+            set
+            {
+                _hasResults = value;
+                OnPropertyChanged();
+                ExportCsvCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public string WindowTitle
@@ -75,17 +102,12 @@ namespace DiskToolsUi.ViewModels
                 IsLoading     = true;
                 StatusMessage = "Chargement de la configuration...";
 
-                // 1. Lire config.json
                 _appConfig  = await _configService.LoadConfigAsync();
                 WindowTitle = _appConfig.UI.Title;
 
-                // 2. Charger le script PowerShell
                 StatusMessage = "Chargement du script PowerShell...";
-                // Dans InitializeAsync(), ligne de chargement du script :
                 await _psRunner.LoadScriptAsync(_appConfig.PowerShell.ScriptPath);
 
-
-                // 3. Construire les paramètres UI (TextBox uniquement)
                 foreach (var paramConfig in _appConfig.UI.Parameters)
                 {
                     Parameters.Add(new ParameterItem
@@ -97,7 +119,6 @@ namespace DiskToolsUi.ViewModels
                     });
                 }
 
-                // 4. Charger les actions
                 foreach (var actionConfig in _appConfig.UI.Actions)
                 {
                     Actions.Add(new ActionItem
@@ -124,38 +145,91 @@ namespace DiskToolsUi.ViewModels
         }
 
         private async Task ExecuteActionAsync(ActionItem action)
-{
-    try
-    {
-        IsLoading     = true;
-        StatusMessage = $"Exécution : {action.Name}...";
-        Results.Clear();
+        {
+            try
+            {
+                IsLoading        = true;
+                HasResults       = false;
+                _lastActionName  = action.Name;
+                StatusMessage    = $"Exécution : {action.Name}...";
+                Results.Clear();
 
-        var parameters = Parameters.ToDictionary(
-            p => p.Name,
-            p => (object)p.CurrentValue
-        );
+                var parameters = Parameters.ToDictionary(
+                    p => p.Name,
+                    p => (object)p.CurrentValue
+                );
 
-        // Retourne maintenant List<ResultItem> au lieu de Dictionary
-        var resultItems = await _psRunner.ExecuteFunctionAsync(action.FunctionName, parameters);
+                var resultItems = await _psRunner.ExecuteFunctionAsync(action.FunctionName, parameters);
 
-        foreach (var item in resultItems)
-            Results.Add(item);
+                foreach (var item in resultItems)
+                    Results.Add(item);
 
-        StatusMessage = $"Terminé : {action.Name}";
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError($"Erreur dans ExecuteActionAsync ({action.Name})", ex);
-        StatusMessage = $"Erreur : {ex.Message}";
-        MessageBox.Show($"Erreur lors de l'exécution :\n{ex.Message}",
-            "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-    }
-    finally
-    {
-        IsLoading = false;
-    }
-}
+                HasResults    = Results.Count > 0;
+                StatusMessage = $"Terminé : {action.Name}";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Erreur dans ExecuteActionAsync ({action.Name})", ex);
+                StatusMessage = $"Erreur : {ex.Message}";
+                MessageBox.Show($"Erreur lors de l'exécution :\n{ex.Message}",
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private void ExportToCsv()
+        {
+            try
+            {
+                // Dialogue de sauvegarde avec nom de fichier suggéré
+                var dialog = new SaveFileDialog
+                {
+                    Title            = "Exporter les résultats en CSV",
+                    Filter           = "Fichier CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+                    DefaultExt       = "csv",
+                    FileName         = $"{SanitizeFileName(_lastActionName)}_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+                };
+
+                if (dialog.ShowDialog() != true) return;
+
+                _csvExport.Export(Results, dialog.FileName);
+
+                StatusMessage = $"Export réussi : {Path.GetFileName(dialog.FileName)}";
+
+                // Proposer d'ouvrir le fichier
+                var open = MessageBox.Show(
+                    $"Export réussi !\n{dialog.FileName}\n\nOuvrir le fichier ?",
+                    "Export CSV",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (open == MessageBoxResult.Yes)
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName        = dialog.FileName,
+                        UseShellExecute = true
+                    });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erreur dans ExportToCsv", ex);
+                MessageBox.Show($"Erreur lors de l'export :\n{ex.Message}",
+                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>Nettoie le nom de l'action pour en faire un nom de fichier valide.</summary>
+        private string SanitizeFileName(string name)
+        {
+            var invalid = Path.GetInvalidFileNameChars();
+            return new string(name.Where(c => !invalid.Contains(c)).ToArray())
+                .Replace(" ", "_")
+                .Trim('_');
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

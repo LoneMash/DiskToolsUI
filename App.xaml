@@ -1,7 +1,7 @@
 ﻿<Application x:Class="DiskToolsUi.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- StartupUri retiré : le démarrage est géré dans App.xaml.cs -->
     <Application.Resources>
     </Application.Resources>
 </Application>
