@@ -374,3 +374,14 @@ C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Speech.dll
 C:\Local\HDD-SerialNumber\DiskToolsUI\bin\Debug\net8.0-windows\Scripts\PowerShell_Base.ps1
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Resources\Buttons.baml
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Resources\Colors.baml
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Resources\Sizes.baml
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Views\ParametersView.baml
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Views\ResultsView.baml
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Views\SidebarView.baml
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Views\ParametersView.g.cs
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Views\ResultsView.g.cs
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Views\SidebarView.g.cs
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\Resources\Converters.baml
+C:\Local\HDD-SerialNumber\DiskToolsUI\obj\Debug\net8.0-windows\App.baml

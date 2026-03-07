@@ -1,5 +1,7 @@
-// LoggerService.cs - Version 1.1
-// Changelog : error.log créé dans le dossier de l'exécutable (AppContext.BaseDirectory)
+// LoggerService.cs - Version 2.2
+// Changelog : Ajout de LogError(string, Exception) pour compatibilité avec
+//             MainWindowViewModel et SilentRunner
+//             Toutes les surcharges disponibles : Log, LogInfo, LogError
 
 using System;
 using System.IO;
@@ -15,31 +17,64 @@ namespace DiskToolsUi.Services
         {
             // Toujours à côté de l'exe : bin/Debug/net8.0-windows/error.log
             _logFilePath = Path.Combine(AppContext.BaseDirectory, logFileName ?? "error.log");
-
-            var dir = Path.GetDirectoryName(_logFilePath);
-            if (!string.IsNullOrEmpty(dir))
-                Directory.CreateDirectory(dir);
         }
 
-        public void LogError(string message, Exception? ex = null)
-        {
-            var logEntry = new StringBuilder();
-            logEntry.AppendLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ❌ ERREUR");
-            logEntry.AppendLine($"  Message    : {message}");
-            if (ex != null)
-            {
-                logEntry.AppendLine($"  Exception  : {ex.Message}");
-                logEntry.AppendLine($"  StackTrace : {ex.StackTrace}");
-            }
-            logEntry.AppendLine(new string('-', 80));
-
-            File.AppendAllText(_logFilePath, logEntry.ToString(), Encoding.UTF8);
-        }
-
+        /// <summary>Logue un message d'information.</summary>
         public void LogInfo(string message)
+            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ℹ️  INFO    : {message}\n" +
+                        new string('-', 80) + "\n");
+
+        /// <summary>Logue un message d'erreur texte simple.</summary>
+        public void LogError(string message)
+            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ❌ ERROR   : {message}\n" +
+                        new string('-', 80) + "\n");
+
+        /// <summary>Logue une exception seule avec sa stack trace.</summary>
+        public void LogError(Exception ex)
+            => WriteLog(BuildExceptionMessage(ex));
+
+        /// <summary>Logue un message + une exception — usage : LogError("contexte", ex).</summary>
+        public void LogError(string message, Exception ex)
+            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ❌ ERROR   : {message}\n" +
+                        BuildExceptionMessage(ex));
+
+        /// <summary>Logue un message texte simple (générique).</summary>
+        public void Log(string message)
+            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 📝 LOG     : {message}\n" +
+                        new string('-', 80) + "\n");
+
+        /// <summary>Logue une exception générique.</summary>
+        public void Log(Exception ex)
+            => WriteLog(BuildExceptionMessage(ex));
+
+        private void WriteLog(string message)
         {
-            var logEntry = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ✅ INFO : {message}{Environment.NewLine}";
-            File.AppendAllText(_logFilePath, logEntry, Encoding.UTF8);
+            try
+            {
+                // Ouverture/fermeture à chaque écriture → pas de handle permanent
+                using var stream = new FileStream(_logFilePath, FileMode.Append,
+                                                  FileAccess.Write, FileShare.ReadWrite);
+                using var writer = new StreamWriter(stream, Encoding.UTF8);
+                writer.Write(message);
+            }
+            catch
+            {
+                // Ne bloque pas l'app si le log est inaccessible
+            }
+        }
+
+        private string BuildExceptionMessage(Exception ex, int level = 0)
+        {
+            var indent = new string(' ', level * 2);
+            var msg = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 💥 EXCEPTION (niveau {level})\n" +
+                      $"{indent}Type       : {ex.GetType().FullName}\n" +
+                      $"{indent}Message    : {ex.Message}\n" +
+                      $"{indent}StackTrace : {ex.StackTrace}\n";
+            if (ex.InnerException != null)
+                msg += $"{indent}--- INNER EXCEPTION ---\n" +
+                       BuildExceptionMessage(ex.InnerException, level + 1);
+            msg += new string('-', 80) + "\n";
+            return msg;
         }
     }
 }

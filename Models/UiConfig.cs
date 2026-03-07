@@ -1,5 +1,5 @@
-// UiConfig.cs - Version 2.5
-// Changelog : FunctionsScriptPath renommé en ScriptPath pour plus de généricité
+// UiConfig.cs - Version 3.0
+// Changelog : Suppression des Parameters globaux, chaque ActionConfig porte ses propres Parameters
 
 using System.Collections.Generic;
 
@@ -16,7 +16,8 @@ namespace DiskToolsUi.Models
         public string Title { get; set; } = "PowerShell UI";
         public int WindowWidth { get; set; } = 900;
         public int WindowHeight { get; set; } = 600;
-        public List<ParameterConfig> Parameters { get; set; } = new();
+
+        // Plus de Parameters globaux : chaque action a les siens
         public List<ActionConfig> Actions { get; set; } = new();
     }
 
@@ -32,12 +33,13 @@ namespace DiskToolsUi.Models
     {
         public string Name { get; set; } = string.Empty;
         public string FunctionName { get; set; } = string.Empty;
-        public string ResultField { get; set; } = string.Empty;
+
+        // Paramètres propres à cette action
+        public List<ParameterConfig> Parameters { get; set; } = new();
     }
 
     public class PowerShellConfig
     {
-        // Nom générique : peut pointer vers n'importe quel script PS1
         public string ScriptPath { get; set; } = "Scripts/PowerShell_Base.ps1";
     }
 }

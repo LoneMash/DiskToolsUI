@@ -1,5 +1,5 @@
-// ParameterItem.cs - Version 1.1
-// Changelog : Suppression des Choices (dropdown supprimé), TextBox uniquement
+// ParameterItem.cs - Version 2.0
+// Changelog : Adapté pour être porté par ActionItem (plus de liste globale dans le ViewModel)
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

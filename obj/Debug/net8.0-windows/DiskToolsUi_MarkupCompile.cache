@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Local\HDD-SerialNumber\DiskToolsUI\App.xaml
-4-86516169
+111643734751
 
-17-1209614470
+231247906779
 246975570730
-MainWindow.xaml;Styles\colors.xaml;Styles\Converters.xaml;Styles\Styles.xaml;
+MainWindow.xaml;Resources\Buttons.xaml;Resources\Colors.xaml;Resources\Converters.xaml;Resources\Sizes.xaml;Styles\colors.xaml;Styles\Converters.xaml;Styles\Styles.xaml;Views\ParametersView.xaml;Views\ResultsView.xaml;Views\SidebarView.xaml;
 
 False
 

@@ -3,43 +3,43 @@
     "Title": "Disk Tools UI",
     "WindowWidth": 900,
     "WindowHeight": 600,
-    "Parameters": [
-      {
-        "Name": "DriveLetter",
-        "Label": "Lettre de lecteur :",
-        "Type": "text",
-        "Default": "C:"
-      }
-    ],
     "Actions": [
       {
         "Name": "📀 Infos Disque",
         "FunctionName": "Get-DiskInfo",
-        "ResultField": "DiskInfo"
+        "Parameters": [
+          { "Name": "DriveLetter", "Label": "Lettre de lecteur :", "Type": "text", "Default": "C:" }
+        ]
       },
       {
         "Name": "🔢 Numéro de Série",
         "FunctionName": "Get-DiskSerial",
-        "ResultField": "SerialNumber"
+        "Parameters": [
+          { "Name": "DriveLetter", "Label": "Lettre de lecteur :", "Type": "text", "Default": "C:" }
+        ]
       },
       {
         "Name": "💾 Espace Disponible",
         "FunctionName": "Get-FreeSpace",
-        "ResultField": "FreeSpace"
+        "Parameters": [
+          { "Name": "DriveLetter", "Label": "Lettre de lecteur :", "Type": "text", "Default": "C:" }
+        ]
       },
       {
         "Name": "📊 Statistiques Complètes",
         "FunctionName": "Get-CompleteStats",
-        "ResultField": "Stats"
+        "Parameters": [
+          { "Name": "DriveLetter", "Label": "Lettre de lecteur :", "Type": "text", "Default": "C:" }
+        ]
       },
       {
-       "Name": "🖥️ Tous les disques",
-       "FunctionName": "Get-AllDisks",
-       "ResultField": "AllDisks"
+        "Name": "🖥️ Tous les disques",
+        "FunctionName": "Get-AllDisks",
+        "Parameters": []
       }
     ]
   },
   "PowerShell": {
-    "FunctionsScriptPath": "Scripts/PowerShell_Base.ps1"
+    "ScriptPath": "Scripts/PowerShell_Base.ps1"
   }
 }

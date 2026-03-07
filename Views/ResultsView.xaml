@@ -1,0 +1,126 @@
+<!-- ResultsView.xaml - Version 1.1 -->
+<!-- Changelog : ColumnDefinition Width en valeur fixe (180) -->
+<!--             pour éviter le conflit Double/GridLength     -->
+
+<UserControl x:Class="DiskToolsUi.Views.ResultsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Background="{StaticResource BackgroundLight}"
+            CornerRadius="{StaticResource CornerRadiusCard}"
+            Padding="{StaticResource PaddingCard}"
+            BorderBrush="{StaticResource BorderColor}"
+            BorderThickness="{StaticResource BorderThicknessCard}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- En-tête : titre + bouton export -->
+            <Grid Grid.Row="0" Margin="{StaticResource MarginResultsHeader}">
+                <TextBlock Text="RÉSULTATS"
+                           FontSize="{StaticResource FontSizeSection}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextMuted}"
+                           VerticalAlignment="Center"/>
+                <Button Content="📥 Exporter CSV"
+                        Command="{Binding ExportCsvCommand}"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource ModernButton}"
+                        Padding="{StaticResource PaddingButtonSmall}"
+                        FontSize="{StaticResource FontSizeSection}"
+                        Visibility="{Binding HasResults,
+                                     Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </Grid>
+
+            <!-- Liste des résultats -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Results}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+
+                                <!-- MODE CLÉ/VALEUR (IsTable = false) -->
+                                <Grid Margin="0,4"
+                                      Visibility="{Binding IsTable,
+                                                   Converter={StaticResource BoolToVisibilityInverseConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <!-- Valeur fixe 180 → pas de conflit Double/GridLength -->
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding Label}"
+                                               Foreground="{StaticResource TextSecondary}"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding Value}"
+                                               Foreground="{StaticResource TextPrimary}"
+                                               TextWrapping="Wrap"/>
+                                </Grid>
+
+                                <!-- MODE TABLEAU (IsTable = true) -->
+                                <StackPanel Visibility="{Binding IsTable,
+                                                         Converter={StaticResource BoolToVisibilityConverter}}"
+                                            Margin="0,4">
+
+                                    <!-- En-têtes de colonnes -->
+                                    <ItemsControl ItemsSource="{Binding Columns}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Rows="1"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{StaticResource AccentColor}"
+                                                        Padding="{StaticResource PaddingTableCell}"
+                                                        Margin="1,0">
+                                                    <TextBlock Text="{Binding}"
+                                                               Foreground="White"
+                                                               FontWeight="Bold"
+                                                               FontSize="{StaticResource FontSizeSection}"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- Lignes du tableau -->
+                                    <ItemsControl ItemsSource="{Binding Rows}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{StaticResource BorderColor}"
+                                                        BorderThickness="0,0,0,1">
+                                                    <ItemsControl ItemsSource="{Binding Cells}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <UniformGrid Rows="1"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding}"
+                                                                           Foreground="{StaticResource TextPrimary}"
+                                                                           Padding="{StaticResource PaddingTableCell}"
+                                                                           Margin="1,0"
+                                                                           TextWrapping="Wrap"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                </StackPanel>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+        </Grid>
+    </Border>
+</UserControl>

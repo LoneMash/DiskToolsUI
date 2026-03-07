@@ -1,12 +1,11 @@
-// SilentRunner.cs - Version 1.0
-// Changelog : Exécution silencieuse d'une fonction PowerShell sans UI
-//             Retourne 0 (succès) ou 1 (erreur) comme code de sortie SCCM
+// SilentRunner.cs - Version 2.0
+// Changelog : Adaptation V3.0 — Parameters déplacés dans chaque ActionConfig
+//             Construction des paramètres depuis action.Parameters au lieu de config.UI.Parameters
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DiskToolsUi.Models;
 
@@ -43,7 +42,7 @@ namespace DiskToolsUi.Services
 
                 if (actionConfig == null)
                 {
-                    _logger.LogError($"[SILENT] Action introuvable dans config.json : '{args.Action}'");
+                    _logger.LogError($"[SILENT] Action introuvable : '{args.Action}'");
                     Console.Error.WriteLine($"[ERREUR] Action '{args.Action}' introuvable dans config.json.");
                     Console.Error.WriteLine($"Actions disponibles : {string.Join(", ", config.UI.Actions.Select(a => a.FunctionName))}");
                     return 1;
@@ -53,16 +52,18 @@ namespace DiskToolsUi.Services
                 await _psRunner.LoadScriptAsync(config.PowerShell.ScriptPath);
 
                 // 4. Construire les paramètres
-                // Priorité : args CLI > valeurs par défaut du config.json
+                // Priorité : args CLI > valeurs par défaut de l'action dans config.json
                 var parameters = new Dictionary<string, object>();
-                foreach (var p in config.UI.Parameters)
+
+                // Valeurs par défaut depuis les Parameters de l'action
+                foreach (var p in actionConfig.Parameters)
                 {
                     parameters[p.Name] = args.Parameters.ContainsKey(p.Name)
                         ? args.Parameters[p.Name]
                         : p.Default;
                 }
 
-                // Ajouter les paramètres CLI non présents dans config.json
+                // Paramètres CLI supplémentaires non déclarés dans config.json
                 foreach (var p in args.Parameters)
                 {
                     if (!parameters.ContainsKey(p.Key))
@@ -81,7 +82,6 @@ namespace DiskToolsUi.Services
                 // 7. Export CSV si demandé
                 if (!string.IsNullOrEmpty(args.ExportPath))
                 {
-                    // Créer le dossier si nécessaire
                     var dir = Path.GetDirectoryName(args.ExportPath);
                     if (!string.IsNullOrEmpty(dir))
                         Directory.CreateDirectory(dir);
@@ -91,14 +91,14 @@ namespace DiskToolsUi.Services
                     _logger.LogInfo($"[SILENT] Export CSV : {args.ExportPath}");
                 }
 
-                _logger.LogInfo($"[SILENT] Terminé avec succès.");
-                return 0; // Code retour SCCM : succès
+                _logger.LogInfo("[SILENT] Terminé avec succès.");
+                return 0;
             }
             catch (Exception ex)
             {
                 _logger.LogError("[SILENT] Erreur fatale", ex);
                 Console.Error.WriteLine($"[ERREUR] {ex.Message}");
-                return 1; // Code retour SCCM : échec
+                return 1;
             }
             finally
             {
@@ -112,7 +112,6 @@ namespace DiskToolsUi.Services
             {
                 if (item.IsTable)
                 {
-                    // Affichage tableau
                     Console.WriteLine(string.Join(" | ", item.Columns));
                     Console.WriteLine(new string('-', 80));
                     foreach (var row in item.Rows)
@@ -120,7 +119,6 @@ namespace DiskToolsUi.Services
                 }
                 else
                 {
-                    // Affichage clé/valeur
                     Console.WriteLine($"{item.Label,-30} : {item.Value}");
                 }
             }

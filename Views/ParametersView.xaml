@@ -1,0 +1,62 @@
+<!-- ParametersView.xaml - Version 1.0 -->
+<!-- UserControl gérant la zone paramètres + bouton Exécuter -->
+<!-- Visible uniquement si l'action sélectionnée a des paramètres (IsFormVisible) -->
+
+<UserControl x:Class="DiskToolsUi.Views.ParametersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Background="{StaticResource BackgroundLight}"
+            CornerRadius="{StaticResource CornerRadiusCard}"
+            Padding="{StaticResource PaddingCard}"
+            Margin="{StaticResource MarginSection}"
+            BorderBrush="{StaticResource BorderColor}"
+            BorderThickness="{StaticResource BorderThicknessCard}"
+            Visibility="{Binding IsFormVisible,
+                         Converter={StaticResource BoolToVisibilityConverter}}">
+        <StackPanel>
+
+            <!-- Titre section -->
+            <TextBlock Text="PARAMÈTRES"
+                       FontSize="{StaticResource FontSizeSection}"
+                       FontWeight="Bold"
+                       Foreground="{StaticResource TextMuted}"
+                       Margin="{StaticResource MarginItem}"/>
+
+            <!-- Champs générés depuis les Parameters de l'action sélectionnée -->
+            <ItemsControl ItemsSource="{Binding SelectedAction.Parameters}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="{StaticResource MarginItem}">
+                            <TextBlock Text="{Binding Label}"
+                                       Foreground="{StaticResource TextPrimary}"
+                                       VerticalAlignment="Center"
+                                       Width="{StaticResource LabelWidth}"
+                                       Margin="0,0,10,0"/>
+                            <TextBox Text="{Binding CurrentValue,
+                                             UpdateSourceTrigger=PropertyChanged}"
+                                     Width="{StaticResource InputWidth}"
+                                     Height="{StaticResource InputHeight}"
+                                     Background="{StaticResource BackgroundInput}"
+                                     Foreground="{StaticResource TextPrimary}"
+                                     BorderBrush="{StaticResource BorderAccent}"
+                                     BorderThickness="{StaticResource BorderThicknessCard}"
+                                     Padding="{StaticResource PaddingInput}"
+                                     FontSize="{StaticResource FontSizeNormal}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Bouton Exécuter -->
+            <Button Content="▶ Exécuter"
+                    Command="{Binding ExecuteActionCommand}"
+                    Style="{StaticResource ExecuteButton}"
+                    HorizontalAlignment="Left"
+                    Padding="{StaticResource PaddingButtonExecute}"
+                    Margin="0,10,0,0"/>
+
+        </StackPanel>
+    </Border>
+</UserControl>
