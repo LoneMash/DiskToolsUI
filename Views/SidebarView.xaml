@@ -28,7 +28,7 @@
                                    VerticalAlignment="Center"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="DiskTools"
+                        <TextBlock Text="RunDeck"
                                    FontSize="{StaticResource FontSizeMedium}"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource TextPrimary}"/>

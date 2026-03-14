@@ -46,7 +46,7 @@ namespace DiskToolsUi.ViewModels
         private bool _hasResults;
 
         [ObservableProperty]
-        private string _windowTitle = "PowerShell UI";
+        private string _windowTitle = "RunDeck";
 
         [ObservableProperty]
         private string _statusMessage = "Initialisation...";

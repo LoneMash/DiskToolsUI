@@ -42,7 +42,7 @@
                         MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                     <Grid>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="{Binding SelectedAction.Name, FallbackValue='DiskTools'}"
+                            <TextBlock Text="{Binding SelectedAction.Name, FallbackValue='RunDeck'}"
                                        FontSize="{StaticResource FontSizeTitle}"
                                        FontWeight="SemiBold"
                                        Foreground="{StaticResource TextPrimary}"/>

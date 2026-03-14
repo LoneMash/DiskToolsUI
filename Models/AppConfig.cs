@@ -17,7 +17,7 @@ namespace DiskToolsUi.Models
 
     public class UiConfig
     {
-        public string Title { get; set; } = "PowerShell UI";
+        public string Title { get; set; } = "RunDeck";
         public string Icon { get; set; } = "⚡";
         public int Width { get; set; } = 900;
         public int Height { get; set; } = 600;
