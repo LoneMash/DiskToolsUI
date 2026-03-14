@@ -1,5 +1,8 @@
-# DiskFunctions.ps1 - Version 2.2
-# Changelog : Ajout de Get-AvailableDrives pour lister tous les lecteurs disponibles
+# PowerShell_Base.ps1 - Version 3.0
+# Changelog :
+#   2.2 - Ajout de Get-AvailableDrives pour lister tous les lecteurs disponibles
+#   3.0 - Ajout de Get-InstalledKB et Get-SystemInfo
+#         Renommage en PowerShell_Base (script unique pour toutes les actions)
 
 $script:DiskDriveInfo    = $null
 $script:DiskLogicalInfo  = $null
@@ -210,5 +213,73 @@ function Get-AllDisks {
     }
 
     return $result
+}
+
+# --------------------------------------------------------------------------
+# Fonctions système (hors disque)
+# --------------------------------------------------------------------------
+
+function Get-InstalledKB {
+    param(
+        [string]$Filter = ""
+    )
+
+    try {
+        $hotfixes = Get-HotFix | Sort-Object -Property InstalledOn -Descending -ErrorAction SilentlyContinue
+
+        if ($Filter -and $Filter -ne "") {
+            $hotfixes = $hotfixes | Where-Object {
+                $_.HotFixID -like "*$Filter*" -or $_.Description -like "*$Filter*"
+            }
+        }
+
+        $result = foreach ($kb in $hotfixes) {
+            [PSCustomObject]@{
+                HotFixID    = $kb.HotFixID
+                Description = $kb.Description
+                InstalledOn = if ($kb.InstalledOn) { $kb.InstalledOn.ToString("yyyy-MM-dd") } else { "Inconnue" }
+                InstalledBy = if ($kb.InstalledBy) { $kb.InstalledBy } else { "Inconnu" }
+            }
+        }
+
+        return $result
+    }
+    catch {
+        return @{ Error = "Erreur dans Get-InstalledKB : $($_.Exception.Message)" }
+    }
+}
+
+function Get-SystemInfo {
+    try {
+        $os   = Get-CimInstance -ClassName Win32_OperatingSystem
+        $cpu  = Get-CimInstance -ClassName Win32_Processor | Select-Object -First 1
+        $cs   = Get-CimInstance -ClassName Win32_ComputerSystem
+        $bios = Get-CimInstance -ClassName Win32_BIOS
+
+        $totalRAM = [math]::Round($cs.TotalPhysicalMemory / 1GB, 1)
+        $freeRAM  = [math]::Round($os.FreePhysicalMemory / 1MB, 1)
+        $uptime   = (Get-Date) - $os.LastBootUpTime
+
+        return @{
+            "Nom du poste"     = $cs.Name
+            "Domaine"          = $cs.Domain
+            "OS"               = $os.Caption
+            "Version"          = $os.Version
+            "Build"            = $os.BuildNumber
+            "Architecture"     = $os.OSArchitecture
+            "Processeur"       = $cpu.Name.Trim()
+            "Coeurs"           = "$($cpu.NumberOfCores) coeurs / $($cpu.NumberOfLogicalProcessors) threads"
+            "RAM totale"       = "$totalRAM GB"
+            "RAM libre"        = "$freeRAM GB"
+            "Fabricant"        = $cs.Manufacturer
+            "Modele"           = $cs.Model
+            "BIOS"             = $bios.SMBIOSBIOSVersion
+            "Numero de serie"  = $bios.SerialNumber
+            "Uptime"           = "{0}j {1}h {2}m" -f $uptime.Days, $uptime.Hours, $uptime.Minutes
+        }
+    }
+    catch {
+        return @{ Error = "Erreur dans Get-SystemInfo : $($_.Exception.Message)" }
+    }
 }
 
