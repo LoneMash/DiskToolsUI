@@ -3,6 +3,8 @@
 # Ignorer le répertoire build
 build/
 bin/
-# Ignorer un fichier spécifique
-
-# Ne pas ignorer un fichier particulier
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
