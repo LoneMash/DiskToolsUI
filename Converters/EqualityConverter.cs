@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace DiskToolsUi.Converters
+namespace RunDeck.Converters
 {
     public class EqualityConverter : IMultiValueConverter
     {

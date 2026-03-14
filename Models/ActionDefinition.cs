@@ -7,7 +7,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DiskToolsUi.Models
+namespace RunDeck.Models
 {
     public class ActionDefinition
     {

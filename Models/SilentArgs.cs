@@ -2,7 +2,7 @@
 // Changelog : Modèle représentant les arguments de ligne de commande en mode silencieux
 
 using System.Collections.Generic;
-namespace DiskToolsUi.Models
+namespace RunDeck.Models
 {
     public class SilentArgs
     {

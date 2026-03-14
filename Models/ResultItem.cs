@@ -7,7 +7,7 @@
 using System.Collections.ObjectModel;
 using System.Data;
 
-namespace DiskToolsUi.Models
+namespace RunDeck.Models
 {
     public class ResultItem
     {

@@ -3,7 +3,7 @@
 
 using System.Windows.Controls;
 
-namespace DiskToolsUi.Views
+namespace RunDeck.Views
 {
     public partial class SidebarView : UserControl
     {

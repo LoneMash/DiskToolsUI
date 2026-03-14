@@ -5,7 +5,7 @@
 using System;
 using System.IO;
 
-namespace DiskToolsUi.Helpers
+namespace RunDeck.Helpers
 {
     public static class PathHelper
     {

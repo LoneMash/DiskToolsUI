@@ -11,11 +11,11 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using DiskToolsUi.Helpers;
-using DiskToolsUi.Models;
+using RunDeck.Helpers;
+using RunDeck.Models;
 
 
-namespace DiskToolsUi.Services
+namespace RunDeck.Services
 {
     public class ConfigService
     {

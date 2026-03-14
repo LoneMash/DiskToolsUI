@@ -19,10 +19,10 @@ using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Threading.Tasks;
-using DiskToolsUi.Helpers;
-using DiskToolsUi.Models;
+using RunDeck.Helpers;
+using RunDeck.Models;
 
-namespace DiskToolsUi.Services
+namespace RunDeck.Services
 {
     public class PowerShellRunner : IDisposable
     {

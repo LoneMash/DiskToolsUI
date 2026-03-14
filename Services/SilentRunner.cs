@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DiskToolsUi.Models;
+using RunDeck.Models;
 
-namespace DiskToolsUi.Services
+namespace RunDeck.Services
 {
     public class SilentRunner
     {

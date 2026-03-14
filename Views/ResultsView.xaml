@@ -1,7 +1,7 @@
 <!-- ResultsView.xaml - Version 5.0 -->
 <!-- Style C# Design Pro : glass card, DataGrid stylé, résultats raffinés -->
 
-<UserControl x:Class="DiskToolsUi.Views.ResultsView"
+<UserControl x:Class="RunDeck.Views.ResultsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 

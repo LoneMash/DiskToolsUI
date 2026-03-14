@@ -7,10 +7,10 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
-using DiskToolsUi.Services;
-using DiskToolsUi.ViewModels;
+using RunDeck.Services;
+using RunDeck.ViewModels;
 
-namespace DiskToolsUi
+namespace RunDeck
 {
     public partial class MainWindow : Window
     {

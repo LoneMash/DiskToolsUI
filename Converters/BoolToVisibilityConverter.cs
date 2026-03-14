@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace DiskToolsUi.Converters
+namespace RunDeck.Converters
 {
     public class BoolToVisibilityConverter : IValueConverter
     {

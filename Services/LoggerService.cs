@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace DiskToolsUi.Services
+namespace RunDeck.Services
 {
     public class LoggerService
     {

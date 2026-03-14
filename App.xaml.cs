@@ -5,9 +5,9 @@
 
 using System;
 using System.Windows;
-using DiskToolsUi.Services;
+using RunDeck.Services;
 
-namespace DiskToolsUi
+namespace RunDeck
 {
     public partial class App : Application
     {

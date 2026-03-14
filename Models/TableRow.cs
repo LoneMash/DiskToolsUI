@@ -4,7 +4,7 @@
 
 using System.Collections.ObjectModel;
 
-namespace DiskToolsUi.Models
+namespace RunDeck.Models
 {
     public class TableRow
     {

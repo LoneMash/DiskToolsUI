@@ -2,7 +2,7 @@
 // Changelog :
 //   1.0 - v3.00 : Création — enum des types de paramètres supportés dans actions.json
 
-namespace DiskToolsUi.Models
+namespace RunDeck.Models
 {
     public enum ParameterType
     {

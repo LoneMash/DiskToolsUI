@@ -21,10 +21,10 @@ using System.Windows.Data;
 using Microsoft.Win32;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DiskToolsUi.Models;
-using DiskToolsUi.Services;
+using RunDeck.Models;
+using RunDeck.Services;
 
-namespace DiskToolsUi.ViewModels
+namespace RunDeck.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject, IDisposable
     {

@@ -3,7 +3,7 @@
 <!--             Rend Colors, Sizes, Converters et Buttons accessibles     -->
 <!--             dans tous les UserControls et fenêtres de l'application   -->
 
-<Application x:Class="DiskToolsUi.App"
+<Application x:Class="RunDeck.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">

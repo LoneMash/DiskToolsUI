@@ -7,7 +7,7 @@
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace DiskToolsUi.Models
+namespace RunDeck.Models
 {
     public partial class ParameterDefinition : ObservableObject
     {

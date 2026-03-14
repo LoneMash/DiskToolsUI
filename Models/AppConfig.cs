@@ -6,7 +6,7 @@
 
 using System.Collections.Generic;
 
-namespace DiskToolsUi.Models
+namespace RunDeck.Models
 {
     public class AppConfig
     {
