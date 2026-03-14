@@ -1,0 +1,75 @@
+{
+  "actions": [
+    {
+      "id": "disk-serial",
+      "name": "Numéro de série disque",
+      "description": "Récupère le numéro de série et les informations du disque spécifié.",
+      "scriptPath": "Scripts\\DiskSerial.ps1",
+      "functionName": "Get-DiskSerial",
+      "outputType": "KeyValue",
+      "parameters": [
+        {
+          "name": "DriveLetter",
+          "label": "Lettre du lecteur",
+          "type": "Text",
+          "defaultValue": "C",
+          "required": true,
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "windows-kb",
+      "name": "KB Windows installées",
+      "description": "Liste toutes les mises à jour KB présentes sur le poste.",
+      "scriptPath": "Scripts\\WindowsKB.ps1",
+      "functionName": "Get-InstalledKB",
+      "outputType": "Table",
+      "parameters": [
+        {
+          "name": "Filter",
+          "label": "Filtre KB (optionnel)",
+          "type": "Text",
+          "defaultValue": "",
+          "required": false,
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "system-info",
+      "name": "Informations système",
+      "description": "Récupère les informations générales du poste (OS, RAM, CPU).",
+      "scriptPath": "Scripts\\SystemInfo.ps1",
+      "functionName": "",
+      "outputType": "KeyValue",
+      "parameters": []
+    },
+    {
+      "id": "disk-space",
+      "name": "Espace disque",
+      "description": "Affiche l'espace utilisé et disponible sur tous les lecteurs.",
+      "scriptPath": "Scripts\\DiskSpace.ps1",
+      "functionName": "Get-DiskSpace",
+      "outputType": "Table",
+      "parameters": [
+        {
+          "name": "DriveType",
+          "label": "Type de lecteur",
+          "type": "Dropdown",
+          "defaultValue": "Tous",
+          "required": false,
+          "options": ["Tous", "Fixe", "Réseau", "Amovible"]
+        },
+        {
+          "name": "ShowEmpty",
+          "label": "Inclure lecteurs vides",
+          "type": "Bool",
+          "defaultValue": "false",
+          "required": false,
+          "options": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,13 @@
-// MainWindowViewModel.cs - Version 3.1
-// Changelog : OnActionSelected — effacement des résultats dès le clic sur une action
+// Version 4.0
+// Changelog :
+//   1.0 - Initial
+//   3.1 - Effacement des résultats dès le clic sur une action
+//   4.0 - v3.00 : Utilise ActionDefinition + ParameterDefinition
+//                 Utilise ConfigService.LoadActionsAsync()
+//                 Utilise PowerShellRunner.ExecuteActionAsync()
+//                 Suppression de la dépendance à un script PS unique global
+//                 Ajout de validation des paramètres Required avant exécution
+//                 Affichage de la description de l'action dans le formulaire
 
 using System;
 using System.Collections.Generic;
@@ -18,32 +26,31 @@ namespace DiskToolsUi.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly ConfigService _configService;
+        private readonly ConfigService    _configService;
         private readonly PowerShellRunner _psRunner;
-        private readonly LoggerService _logger;
+        private readonly LoggerService    _logger;
         private readonly CsvExportService _csvExport;
-        private AppConfig? _appConfig;
 
-        private bool _isLoading;
-        private bool _hasResults;
-        private string _windowTitle = "PowerShell UI";
-        private string _statusMessage = "Initialisation...";
-        private string _lastActionName = string.Empty;
-        private ActionItem? _selectedAction;
+        private bool            _isLoading;
+        private bool            _hasResults;
+        private string          _windowTitle    = "PowerShell UI";
+        private string          _statusMessage  = "Initialisation...";
+        private string          _lastActionName = string.Empty;
+        private ActionDefinition? _selectedAction;
 
         public MainWindowViewModel()
         {
-            _configService = new ConfigService();
             _logger        = new LoggerService();
+            _configService = new ConfigService();
             _psRunner      = new PowerShellRunner(_logger);
             _csvExport     = new CsvExportService();
 
-            Actions = new ObservableCollection<ActionItem>();
+            Actions = new ObservableCollection<ActionDefinition>();
             Results = new ObservableCollection<ResultItem>();
 
             SelectActionCommand = new RelayCommand(
-                param => OnActionSelected((ActionItem)param!),
-                param => !IsLoading && param is ActionItem
+                param => OnActionSelected((ActionDefinition)param!),
+                param => !IsLoading && param is ActionDefinition
             );
 
             ExecuteActionCommand = new RelayCommand(
@@ -59,14 +66,17 @@ namespace DiskToolsUi.ViewModels
             _ = InitializeAsync();
         }
 
-        public ObservableCollection<ActionItem> Actions { get; }
-        public ObservableCollection<ResultItem> Results { get; }
+        // -----------------------------------------------------------------------
+        // Propriétés publiques
+        // -----------------------------------------------------------------------
+        public ObservableCollection<ActionDefinition> Actions { get; }
+        public ObservableCollection<ResultItem>       Results { get; }
 
-        public RelayCommand SelectActionCommand { get; }
+        public RelayCommand SelectActionCommand  { get; }
         public RelayCommand ExecuteActionCommand { get; }
-        public RelayCommand ExportCsvCommand { get; }
+        public RelayCommand ExportCsvCommand     { get; }
 
-        public ActionItem? SelectedAction
+        public ActionDefinition? SelectedAction
         {
             get => _selectedAction;
             set
@@ -74,11 +84,16 @@ namespace DiskToolsUi.ViewModels
                 _selectedAction = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsFormVisible));
+                OnPropertyChanged(nameof(ActionDescription));
                 ExecuteActionCommand.RaiseCanExecuteChanged();
             }
         }
 
+        /// <summary>True si l'action sélectionnée possède des paramètres à afficher</summary>
         public bool IsFormVisible => SelectedAction != null && SelectedAction.HasParameters;
+
+        /// <summary>Description de l'action sélectionnée, affichée dans ParametersView</summary>
+        public string ActionDescription => SelectedAction?.Description ?? string.Empty;
 
         public bool IsLoading
         {
@@ -116,47 +131,32 @@ namespace DiskToolsUi.ViewModels
             set { _statusMessage = value; OnPropertyChanged(); }
         }
 
+        // -----------------------------------------------------------------------
+        // Initialisation asynchrone
+        // -----------------------------------------------------------------------
         private async Task InitializeAsync()
         {
             try
             {
-                IsLoading     = true;
+                IsLoading = true;
                 StatusMessage = "Chargement de la configuration...";
 
-                _appConfig  = await _configService.LoadConfigAsync();
-                WindowTitle = _appConfig.UI.Title;
+                var appConfig = await _configService.LoadConfigAsync();
+                WindowTitle   = appConfig.UI.Title;
 
-                StatusMessage = "Chargement du script PowerShell...";
-                await _psRunner.LoadScriptAsync(_appConfig.PowerShell.ScriptPath);
+                StatusMessage = "Chargement des actions...";
+                var actions = await _configService.LoadActionsAsync(appConfig.ActionsFile);
 
-                foreach (var actionConfig in _appConfig.UI.Actions)
-                {
-                    var actionItem = new ActionItem
-                    {
-                        Name         = actionConfig.Name,
-                        FunctionName = actionConfig.FunctionName
-                    };
+                foreach (var action in actions)
+                    Actions.Add(action);
 
-                    foreach (var paramConfig in actionConfig.Parameters)
-                    {
-                        actionItem.Parameters.Add(new ParameterItem
-                        {
-                            Name         = paramConfig.Name,
-                            Label        = paramConfig.Label,
-                            Type         = paramConfig.Type,
-                            CurrentValue = paramConfig.Default
-                        });
-                    }
-
-                    Actions.Add(actionItem);
-                }
-
-                StatusMessage = "Prêt";
+                StatusMessage = $"Prêt — {Actions.Count} action(s) disponible(s)";
+                _logger.LogInfo($"Initialisation terminée : {Actions.Count} action(s) chargée(s).");
             }
             catch (Exception ex)
             {
                 _logger.LogError("Erreur dans InitializeAsync", ex);
-                StatusMessage = $"Erreur : {ex.Message}";
+                StatusMessage = $"Erreur d'initialisation : {ex.Message}";
                 MessageBox.Show($"Erreur lors de l'initialisation :\n{ex.Message}",
                     "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -166,30 +166,53 @@ namespace DiskToolsUi.ViewModels
             }
         }
 
-        // ---------------------------------------------------------------
-        // MODIFIÉ V3.1 : effacement des résultats et du statut dès le clic
-        // ---------------------------------------------------------------
-        private void OnActionSelected(ActionItem action)
+        // -----------------------------------------------------------------------
+        // Sélection d'une action dans la sidebar
+        // -----------------------------------------------------------------------
+        private void OnActionSelected(ActionDefinition action)
         {
-            // Effacer les résultats précédents dès la sélection d'une nouvelle action
             Results.Clear();
             HasResults    = false;
-            StatusMessage = "Prêt";
-
+            StatusMessage = $"Action sélectionnée : {action.Name}";
             SelectedAction = action;
 
+            // Pas de paramètres → exécution immédiate
             if (!action.HasParameters)
-            {
-                // Pas de paramètres → exécution immédiate
                 _ = ExecuteSelectedActionAsync();
-            }
-            // Avec paramètres → IsFormVisible = true → formulaire affiché
         }
-        // ---------------------------------------------------------------
 
+        // -----------------------------------------------------------------------
+        // Validation des paramètres Required avant exécution
+        // -----------------------------------------------------------------------
+        private bool ValidateParameters()
+        {
+            if (SelectedAction == null) return false;
+
+            var missing = SelectedAction.Parameters
+                .Where(p => p.Required && string.IsNullOrWhiteSpace(p.CurrentValue))
+                .Select(p => p.Label)
+                .ToList();
+
+            if (missing.Count == 0) return true;
+
+            var list = string.Join("\n  • ", missing);
+            MessageBox.Show(
+                $"Les paramètres suivants sont obligatoires :\n  • {list}",
+                "Paramètres manquants",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+
+            StatusMessage = "Paramètres obligatoires manquants.";
+            return false;
+        }
+
+        // -----------------------------------------------------------------------
+        // Exécution de l'action sélectionnée
+        // -----------------------------------------------------------------------
         private async Task ExecuteSelectedActionAsync()
         {
             if (SelectedAction == null) return;
+            if (!ValidateParameters()) return;
 
             try
             {
@@ -204,14 +227,17 @@ namespace DiskToolsUi.ViewModels
                     p => (object)p.CurrentValue
                 );
 
-                var resultItems = await _psRunner.ExecuteFunctionAsync(
-                    SelectedAction.FunctionName, parameters);
+                var resultItems = await _psRunner.ExecuteActionAsync(SelectedAction, parameters);
 
                 foreach (var item in resultItems)
                     Results.Add(item);
 
                 HasResults    = Results.Count > 0;
-                StatusMessage = $"Terminé : {SelectedAction.Name}";
+                StatusMessage = HasResults
+                    ? $"Terminé : {SelectedAction.Name} — {Results.Count} résultat(s)"
+                    : $"Terminé : {SelectedAction.Name} — Aucun résultat";
+
+                _logger.LogInfo($"Action '{SelectedAction.Name}' terminée : {Results.Count} résultat(s).");
             }
             catch (Exception ex)
             {
@@ -226,16 +252,19 @@ namespace DiskToolsUi.ViewModels
             }
         }
 
+        // -----------------------------------------------------------------------
+        // Export CSV
+        // -----------------------------------------------------------------------
         private void ExportToCsv()
         {
             try
             {
                 var dialog = new SaveFileDialog
                 {
-                    Title            = "Exporter les résultats en CSV",
-                    Filter           = "Fichier CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
-                    DefaultExt       = "csv",
-                    FileName         = $"{SanitizeFileName(_lastActionName)}_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
+                    Title          = "Exporter les résultats en CSV",
+                    Filter         = "Fichier CSV (*.csv)|*.csv|Tous les fichiers (*.*)|*.*",
+                    DefaultExt     = "csv",
+                    FileName       = $"{SanitizeFileName(_lastActionName)}_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
                     InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
                 };
 
@@ -263,7 +292,10 @@ namespace DiskToolsUi.ViewModels
             }
         }
 
-        private string SanitizeFileName(string name)
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+        private static string SanitizeFileName(string name)
         {
             var invalid = Path.GetInvalidFileNameChars();
             return new string(name.Where(c => !invalid.Contains(c)).ToArray())

@@ -1,10 +1,15 @@
-// ConfigService.cs - Version 2.1
-// Changelog : Utilisation de AppContext.BaseDirectory pour les chemins relatifs
-//             évite les erreurs quand l'app est lancée depuis un raccourci ou bat
+// Version 2.0
+// Changelog :
+//   1.0 - Initial : chargement appsettings.json uniquement
+//   2.0 - v3.00 : Ajout LoadActionsAsync() — charge actions.json séparément
+//                 Résolution du chemin relatif à AppContext.BaseDirectory
+//                 Mapping ActionConfig → ActionDefinition avec enum parsing
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using DiskToolsUi.Models;
 
@@ -12,35 +17,99 @@ namespace DiskToolsUi.Services
 {
     public class ConfigService
     {
-        private readonly string _configPath;
-
-        public ConfigService(string configPath = "Scripts/config.json")
+        private static readonly JsonSerializerOptions _jsonOptions = new()
         {
-            // Toujours relatif au dossier de l'exe, peu importe d'où on lance l'app
-            _configPath = Path.Combine(AppContext.BaseDirectory, configPath);
-        }
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }
+        };
 
+        // -----------------------------------------------------------------------
+        // Charge appsettings.json
+        // -----------------------------------------------------------------------
         public async Task<AppConfig> LoadConfigAsync()
         {
-            try
-            {
-                if (!File.Exists(_configPath))
-                    throw new FileNotFoundException(
-                        $"Configuration file not found: {_configPath}");
+            var path = ResolveRelativePath("appsettings.json");
 
-                var jsonContent = await File.ReadAllTextAsync(_configPath);
-                var config = JsonSerializer.Deserialize<AppConfig>(jsonContent, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    ReadCommentHandling = JsonCommentHandling.Skip
-                });
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"appsettings.json introuvable : {path}");
 
-                return config ?? new AppConfig();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error loading configuration: {ex.Message}", ex);
-            }
+            var json = await File.ReadAllTextAsync(path);
+            return JsonSerializer.Deserialize<AppConfig>(json, _jsonOptions)
+                   ?? throw new InvalidOperationException("appsettings.json désérialisé en null.");
         }
+
+        // -----------------------------------------------------------------------
+        // Charge actions.json et le mappe vers une liste d'ActionDefinition
+        // -----------------------------------------------------------------------
+        public async Task<List<ActionDefinition>> LoadActionsAsync(string actionsFilePath)
+        {
+            var path = ResolveRelativePath(actionsFilePath);
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"Fichier actions introuvable : {path}");
+
+            var json = await File.ReadAllTextAsync(path);
+            var actionsConfig = JsonSerializer.Deserialize<ActionsConfig>(json, _jsonOptions)
+                                ?? throw new InvalidOperationException("actions.json désérialisé en null.");
+
+            return MapToDefinitions(actionsConfig.Actions);
+        }
+
+        // -----------------------------------------------------------------------
+        // Mapping ActionConfig (JSON) → ActionDefinition (modèle applicatif)
+        // -----------------------------------------------------------------------
+        private static List<ActionDefinition> MapToDefinitions(List<ActionConfig> configs)
+        {
+            var definitions = new List<ActionDefinition>();
+
+            foreach (var config in configs)
+            {
+                // Parsing OutputType avec fallback sur KeyValue
+                if (!Enum.TryParse<OutputType>(config.OutputType, ignoreCase: true, out var outputType))
+                    outputType = OutputType.KeyValue;
+
+                var action = new ActionDefinition
+                {
+                    Id           = config.Id,
+                    Name         = config.Name,
+                    Description  = config.Description,
+                    ScriptPath   = config.ScriptPath,
+                    FunctionName = string.IsNullOrWhiteSpace(config.FunctionName)
+                                   ? null
+                                   : config.FunctionName,
+                    OutputType   = outputType
+                };
+
+                foreach (var p in config.Parameters)
+                {
+                    // Parsing ParameterType avec fallback sur Text
+                    if (!Enum.TryParse<ParameterType>(p.Type, ignoreCase: true, out var paramType))
+                        paramType = ParameterType.Text;
+
+                    action.Parameters.Add(new ParameterDefinition
+                    {
+                        Name         = p.Name,
+                        Label        = p.Label,
+                        Type         = paramType,
+                        DefaultValue = p.DefaultValue,
+                        CurrentValue = p.DefaultValue,  // pré-remplissage avec la valeur par défaut
+                        Required     = p.Required,
+                        Options      = p.Options
+                    });
+                }
+
+                definitions.Add(action);
+            }
+
+            return definitions;
+        }
+
+        // -----------------------------------------------------------------------
+        // Résout un chemin relatif par rapport au dossier de l'exécutable
+        // -----------------------------------------------------------------------
+        private static string ResolveRelativePath(string path)
+            => Path.IsPathRooted(path)
+               ? path
+               : Path.Combine(AppContext.BaseDirectory, path);
     }
 }

@@ -12,13 +12,13 @@
     <SolidColorBrush x:Key="BackgroundInput"      Color="#3F3F46"/>
 
     <!-- Couleur d'accentuation -->
-    <SolidColorBrush x:Key="AccentColor"          Color="#007ACC"/>
+    <SolidColorBrush x:Key="AccentColor"          Color="#f5ee25"/>
     <SolidColorBrush x:Key="AccentColorHover"     Color="#005A9E"/>
     <SolidColorBrush x:Key="AccentColorPressed"   Color="#004E8C"/>
 
     <!-- Couleurs de texte -->
-    <SolidColorBrush x:Key="TextPrimary"          Color="#F1F1F1"/>
-    <SolidColorBrush x:Key="TextSecondary"        Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="TextPrimary"          Color="#005A9E"/>
+    <SolidColorBrush x:Key="TextSecondary"        Color="#007ACC"/>
     <SolidColorBrush x:Key="TextMuted"            Color="#808080"/>
 
     <!-- Couleurs de bordure -->
