@@ -45,7 +45,6 @@ namespace DiskToolsUi.Models
         public string Description { get; set; } = string.Empty;
         public string ScriptPath { get; set; } = string.Empty;
         public string? FunctionName { get; set; }
-        public string OutputType { get; set; } = "KeyValue";
         public List<ParameterConfig> Parameters { get; set; } = new();
     }
 

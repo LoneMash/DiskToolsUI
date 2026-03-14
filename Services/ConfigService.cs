@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using DiskToolsUi.Helpers;
 using DiskToolsUi.Models;
 
+
 namespace DiskToolsUi.Services
 {
     public class ConfigService
@@ -65,10 +66,6 @@ namespace DiskToolsUi.Services
 
             foreach (var config in configs)
             {
-                // Parsing OutputType avec fallback sur KeyValue
-                if (!Enum.TryParse<OutputType>(config.OutputType, ignoreCase: true, out var outputType))
-                    outputType = OutputType.KeyValue;
-
                 var action = new ActionDefinition
                 {
                     Id           = config.Id,
@@ -77,8 +74,7 @@ namespace DiskToolsUi.Services
                     ScriptPath   = config.ScriptPath,
                     FunctionName = string.IsNullOrWhiteSpace(config.FunctionName)
                                    ? null
-                                   : config.FunctionName,
-                    OutputType   = outputType
+                                   : config.FunctionName
                 };
 
                 foreach (var p in config.Parameters)

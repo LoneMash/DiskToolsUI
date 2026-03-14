@@ -1,4 +1,4 @@
-// Version 3.0
+// Version 4.0
 // Changelog :
 //   1.0 - Initial
 //   2.3 - Support arrays, PSCustomObject, Hashtable, types simples
@@ -6,8 +6,9 @@
 //                 Ajout de ExecuteActionAsync(ActionDefinition, Dictionary<string,object>)
 //                 Support script autonome (FunctionName null) + script avec fonction
 //                 Cache des scripts déjà chargés (évite les rechargements inutiles)
-//                 Ajout ParseLog() pour OutputType.Log
 //                 Runspace recréé proprement si script autonome (isolation)
+//   4.0 - Auto-détection du type de sortie (Table, KeyValue, Log)
+//          Suppression de la dépendance à OutputType dans ActionDefinition
 
 using System;
 using System.Collections;
@@ -57,11 +58,11 @@ namespace DiskToolsUi.Services
 
                 // Script autonome → runspace isolé, pas de cache
                 if (action.FunctionName == null)
-                    return ExecuteStandaloneScript(scriptPath, parameters, action.OutputType);
+                    return ExecuteStandaloneScript(scriptPath, parameters);
 
                 // Script avec fonction → chargement avec cache
                 LoadScriptIfNeeded(scriptPath);
-                return ExecuteFunction(action.FunctionName, parameters, action.OutputType);
+                return ExecuteFunction(action.FunctionName, parameters);
             });
         }
 
@@ -71,8 +72,7 @@ namespace DiskToolsUi.Services
         // -----------------------------------------------------------------------
         private List<ResultItem> ExecuteStandaloneScript(
             string scriptPath,
-            Dictionary<string, object> parameters,
-            OutputType outputType)
+            Dictionary<string, object> parameters)
         {
             using var isolatedRunspace = CreateRunspace();
             using var ps = PowerShell.Create();
@@ -88,7 +88,7 @@ namespace DiskToolsUi.Services
             CheckErrors(ps, scriptPath);
 
             _logger.LogInfo($"Script autonome exécuté : {scriptPath}");
-            return ParseResults(results, outputType);
+            return ParseResults(results);
         }
 
         // -----------------------------------------------------------------------
@@ -118,8 +118,7 @@ namespace DiskToolsUi.Services
         // -----------------------------------------------------------------------
         private List<ResultItem> ExecuteFunction(
             string functionName,
-            Dictionary<string, object> parameters,
-            OutputType outputType)
+            Dictionary<string, object> parameters)
         {
             using var ps = PowerShell.Create();
             ps.Runspace = _runspace;
@@ -132,7 +131,7 @@ namespace DiskToolsUi.Services
             CheckErrors(ps, functionName);
 
             _logger.LogInfo($"Fonction '{functionName}' exécutée avec succès.");
-            return ParseResults(results, outputType);
+            return ParseResults(results);
         }
 
         // -----------------------------------------------------------------------
@@ -149,11 +148,12 @@ namespace DiskToolsUi.Services
         }
 
         // -----------------------------------------------------------------------
-        // Routage du parsing selon OutputType déclaré dans actions.json
+        // Auto-détection du type de sortie et routage du parsing
+        //   - Hashtable ou objet unique     → KeyValue
+        //   - Plusieurs PSCustomObject       → Table
+        //   - Chaînes de texte              → Log
         // -----------------------------------------------------------------------
-        private List<ResultItem> ParseResults(
-            Collection<PSObject> results,
-            OutputType outputType)
+        private List<ResultItem> ParseResults(Collection<PSObject> results)
         {
             if (results == null || results.Count == 0)
             {
@@ -161,13 +161,32 @@ namespace DiskToolsUi.Services
                 return new List<ResultItem>();
             }
 
-            return outputType switch
+            var first = results[0].BaseObject;
+
+            // Hashtable → toujours KeyValue
+            if (first is Hashtable)
             {
-                OutputType.Table    => ParseTable(results),
-                OutputType.Log      => ParseLog(results),
-                OutputType.KeyValue => ParseKeyValue(results),
-                _                   => ParseKeyValue(results)
-            };
+                _logger.LogInfo("Type détecté : KeyValue (Hashtable)");
+                return ParseKeyValue(results);
+            }
+
+            // Chaîne de texte → Log
+            if (first is string)
+            {
+                _logger.LogInfo("Type détecté : Log (String)");
+                return ParseLog(results);
+            }
+
+            // Plusieurs objets avec propriétés → Table
+            if (results.Count > 1 && results[0].Properties.Any())
+            {
+                _logger.LogInfo("Type détecté : Table (multiple objects)");
+                return ParseTable(results);
+            }
+
+            // Objet unique avec propriétés → KeyValue
+            _logger.LogInfo("Type détecté : KeyValue (single object)");
+            return ParseKeyValue(results);
         }
 
         // -----------------------------------------------------------------------

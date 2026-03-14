@@ -32,9 +32,6 @@ namespace DiskToolsUi.Models
         /// </summary>
         public string? FunctionName { get; set; }
 
-        /// <summary>Type de rendu attendu pour les résultats</summary>
-        public OutputType OutputType { get; set; } = OutputType.KeyValue;
-
         /// <summary>Paramètres du formulaire, construits depuis actions.json</summary>
         public List<ParameterDefinition> Parameters { get; set; } = new();
 
