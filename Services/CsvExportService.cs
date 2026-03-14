@@ -47,7 +47,7 @@ namespace DiskToolsUi.Services
         /// Échappe une valeur CSV : entoure de guillemets si elle contient
         /// un point-virgule, un guillemet ou un retour à la ligne.
         /// </summary>
-        private string EscapeCsv(string value)
+        private static string EscapeCsv(string value)
         {
             if (string.IsNullOrEmpty(value)) return string.Empty;
 

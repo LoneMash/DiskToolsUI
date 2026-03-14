@@ -1,7 +1,8 @@
-// LoggerService.cs - Version 2.2
+// LoggerService.cs - Version 2.3
 // Changelog : Ajout de LogError(string, Exception) pour compatibilité avec
 //             MainWindowViewModel et SilentRunner
 //             Toutes les surcharges disponibles : Log, LogInfo, LogError
+//   2.3 - Standardisation des préfixes de log (emoji → texte) pour compatibilité universelle
 
 using System;
 using System.IO;
@@ -21,12 +22,12 @@ namespace DiskToolsUi.Services
 
         /// <summary>Logue un message d'information.</summary>
         public void LogInfo(string message)
-            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ℹ️  INFO    : {message}\n" +
+            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [INFO]  {message}\n" +
                         new string('-', 80) + "\n");
 
         /// <summary>Logue un message d'erreur texte simple.</summary>
         public void LogError(string message)
-            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ❌ ERROR   : {message}\n" +
+            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] {message}\n" +
                         new string('-', 80) + "\n");
 
         /// <summary>Logue une exception seule avec sa stack trace.</summary>
@@ -35,12 +36,12 @@ namespace DiskToolsUi.Services
 
         /// <summary>Logue un message + une exception — usage : LogError("contexte", ex).</summary>
         public void LogError(string message, Exception ex)
-            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ❌ ERROR   : {message}\n" +
+            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] {message}\n" +
                         BuildExceptionMessage(ex));
 
         /// <summary>Logue un message texte simple (générique).</summary>
         public void Log(string message)
-            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 📝 LOG     : {message}\n" +
+            => WriteLog($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [LOG]   {message}\n" +
                         new string('-', 80) + "\n");
 
         /// <summary>Logue une exception générique.</summary>
@@ -66,7 +67,7 @@ namespace DiskToolsUi.Services
         private string BuildExceptionMessage(Exception ex, int level = 0)
         {
             var indent = new string(' ', level * 2);
-            var msg = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 💥 EXCEPTION (niveau {level})\n" +
+            var msg = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] EXCEPTION (niveau {level})\n" +
                       $"{indent}Type       : {ex.GetType().FullName}\n" +
                       $"{indent}Message    : {ex.Message}\n" +
                       $"{indent}StackTrace : {ex.StackTrace}\n";

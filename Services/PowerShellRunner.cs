@@ -18,6 +18,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Threading.Tasks;
+using DiskToolsUi.Helpers;
 using DiskToolsUi.Models;
 
 namespace DiskToolsUi.Services
@@ -45,7 +46,7 @@ namespace DiskToolsUi.Services
         {
             return await Task.Run(() =>
             {
-                var scriptPath = ResolveRelativePath(action.ScriptPath);
+                var scriptPath = PathHelper.ResolveRelativePath(action.ScriptPath);
 
                 if (!File.Exists(scriptPath))
                 {
@@ -280,11 +281,6 @@ namespace DiskToolsUi.Services
             rs.Open();
             return rs;
         }
-
-        private static string ResolveRelativePath(string path)
-            => Path.IsPathRooted(path)
-               ? path
-               : Path.Combine(AppContext.BaseDirectory, path);
 
         public void Dispose()
         {

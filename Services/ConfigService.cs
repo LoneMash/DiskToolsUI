@@ -11,6 +11,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using DiskToolsUi.Helpers;
 using DiskToolsUi.Models;
 
 namespace DiskToolsUi.Services
@@ -28,7 +29,7 @@ namespace DiskToolsUi.Services
         // -----------------------------------------------------------------------
         public async Task<AppConfig> LoadConfigAsync()
         {
-            var path = ResolveRelativePath("appsettings.json");
+            var path = PathHelper.ResolveRelativePath("appsettings.json");
 
             if (!File.Exists(path))
                 throw new FileNotFoundException($"appsettings.json introuvable : {path}");
@@ -43,7 +44,7 @@ namespace DiskToolsUi.Services
         // -----------------------------------------------------------------------
         public async Task<List<ActionDefinition>> LoadActionsAsync(string actionsFilePath)
         {
-            var path = ResolveRelativePath(actionsFilePath);
+            var path = PathHelper.ResolveRelativePath(actionsFilePath);
 
             if (!File.Exists(path))
                 throw new FileNotFoundException($"Fichier actions introuvable : {path}");
@@ -104,12 +105,5 @@ namespace DiskToolsUi.Services
             return definitions;
         }
 
-        // -----------------------------------------------------------------------
-        // Résout un chemin relatif par rapport au dossier de l'exécutable
-        // -----------------------------------------------------------------------
-        private static string ResolveRelativePath(string path)
-            => Path.IsPathRooted(path)
-               ? path
-               : Path.Combine(AppContext.BaseDirectory, path);
     }
 }
