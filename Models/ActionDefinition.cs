@@ -32,6 +32,12 @@ namespace DiskToolsUi.Models
         /// </summary>
         public string? FunctionName { get; set; }
 
+        /// <summary>Catégorie pour le regroupement dans la sidebar (ex: "Disque", "Système")</summary>
+        public string Category { get; set; } = string.Empty;
+
+        /// <summary>Icône emoji affichée dans la sidebar</summary>
+        public string Icon { get; set; } = string.Empty;
+
         /// <summary>Paramètres du formulaire, construits depuis actions.json</summary>
         public List<ParameterDefinition> Parameters { get; set; } = new();
 

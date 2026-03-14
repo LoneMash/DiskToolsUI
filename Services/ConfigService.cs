@@ -74,7 +74,9 @@ namespace DiskToolsUi.Services
                     ScriptPath   = config.ScriptPath,
                     FunctionName = string.IsNullOrWhiteSpace(config.FunctionName)
                                    ? null
-                                   : config.FunctionName
+                                   : config.FunctionName,
+                    Category     = config.Category,
+                    Icon         = config.Icon
                 };
 
                 foreach (var p in config.Parameters)

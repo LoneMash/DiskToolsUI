@@ -12,10 +12,12 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using Microsoft.Win32;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -74,6 +76,9 @@ namespace DiskToolsUi.ViewModels
         public ObservableCollection<ActionDefinition> Actions { get; }
         public ObservableCollection<ResultItem>       Results { get; }
 
+        /// <summary>Vue groupée par catégorie pour la sidebar</summary>
+        public ICollectionView GroupedActions { get; private set; } = null!;
+
         /// <summary>True si l'action sélectionnée possède des paramètres à afficher</summary>
         public bool IsFormVisible => SelectedAction != null && SelectedAction.HasParameters;
 
@@ -98,6 +103,11 @@ namespace DiskToolsUi.ViewModels
 
                 foreach (var action in actions)
                     Actions.Add(action);
+
+                // Créer la vue groupée par catégorie pour la sidebar
+                GroupedActions = CollectionViewSource.GetDefaultView(Actions);
+                GroupedActions.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ActionDefinition.Category)));
+                OnPropertyChanged(nameof(GroupedActions));
 
                 StatusMessage = $"Prêt — {Actions.Count} action(s) disponible(s)";
                 _logger.LogInfo($"Initialisation terminée : {Actions.Count} action(s) chargée(s).");

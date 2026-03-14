@@ -1,40 +1,28 @@
-<!-- Version 3.0                                                              -->
-<!-- Changelog :                                                              -->
-<!--   1.0 - Initial : TextBox uniquement                                    -->
-<!--   3.0 - v3.00 : Affichage description de l'action                      -->
-<!--                 Support multi-types : Text, Number, Bool, Dropdown      -->
-<!--                 Indicateur visuel * pour paramètres Required            -->
+<!-- ParametersView.xaml - Version 4.0 -->
+<!-- Style C# Design Pro : glass card, gradient button, rounded inputs -->
+
 <UserControl x:Class="DiskToolsUi.Views.ParametersView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:models="clr-namespace:DiskToolsUi.Models">
 
-    <Border Background="{StaticResource BackgroundLight}"
+    <Border Background="{StaticResource GlassBackground}"
             CornerRadius="{StaticResource CornerRadiusCard}"
             Padding="{StaticResource PaddingCard}"
             Margin="{StaticResource MarginSection}"
-            BorderBrush="{StaticResource BorderColor}"
+            BorderBrush="{StaticResource GlassBorder}"
             BorderThickness="{StaticResource BorderThicknessCard}"
             Visibility="{Binding IsFormVisible,
                          Converter={StaticResource BoolToVisibilityConverter}}">
         <StackPanel>
 
-            <!-- En-tête -->
+            <!-- Label catégorie -->
             <TextBlock Text="PARAMÈTRES"
-                       FontSize="{StaticResource FontSizeSection}"
-                       FontWeight="Bold"
+                       FontSize="{StaticResource FontSizeCategory}"
+                       FontWeight="SemiBold"
                        Foreground="{StaticResource TextMuted}"
-                       Margin="{StaticResource MarginItem}"/>
-
-            <!-- Description de l'action -->
-            <TextBlock Text="{Binding ActionDescription}"
-                       FontSize="{StaticResource FontSizeNormal}"
-                       Foreground="{StaticResource TextSecondary}"
-                       FontStyle="Italic"
-                       TextWrapping="Wrap"
-                       Margin="0,0,0,12"
-                       Visibility="{Binding ActionDescription,
-                                    Converter={StaticResource BoolToVisibilityConverter}}"/>
+                       Margin="{StaticResource MarginItem}"
+                       />
 
             <!-- Liste des paramètres -->
             <ItemsControl ItemsSource="{Binding SelectedAction.Parameters}">
@@ -49,8 +37,9 @@
                                         VerticalAlignment="Center"
                                         Margin="0,0,10,0">
                                 <TextBlock Text="{Binding Label}"
-                                           Foreground="{StaticResource TextPrimary}"
+                                           Foreground="{StaticResource TextSecondary}"
                                            VerticalAlignment="Center"
+                                           FontSize="{StaticResource FontSizeNormal}"
                                            TextTrimming="CharacterEllipsis"/>
                                 <TextBlock Text=" *"
                                            Foreground="{StaticResource AccentColor}"
@@ -60,34 +49,38 @@
                                                         Converter={StaticResource BoolToVisibilityConverter}}"/>
                             </StackPanel>
 
-                            <!-- TEXT -->
-                            <TextBox Text="{Binding CurrentValue,
-                                             UpdateSourceTrigger=PropertyChanged}"
-                                     Width="{StaticResource InputWidth}"
-                                     Height="{StaticResource InputHeight}"
-                                     Background="{StaticResource BackgroundInput}"
-                                     Foreground="{StaticResource TextPrimary}"
-                                     BorderBrush="{StaticResource BorderAccent}"
-                                     BorderThickness="{StaticResource BorderThicknessCard}"
-                                     Padding="{StaticResource PaddingInput}"
-                                     FontSize="{StaticResource FontSizeNormal}"
-                                     VerticalContentAlignment="Center">
-                                <TextBox.Style>
-                                    <Style TargetType="TextBox">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Type}" Value="Text">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Type}" Value="Number">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
+                            <!-- TEXT / NUMBER -->
+                            <Border CornerRadius="{StaticResource CornerRadiusInput}"
+                                    Background="{StaticResource BackgroundInput}"
+                                    BorderBrush="{StaticResource BorderAccent}"
+                                    BorderThickness="{StaticResource BorderThicknessCard}">
+                                <TextBox Text="{Binding CurrentValue,
+                                                 UpdateSourceTrigger=PropertyChanged}"
+                                         Width="{StaticResource InputWidth}"
+                                         Background="Transparent"
+                                         Foreground="{StaticResource TextPrimary}"
+                                         BorderThickness="0"
+                                         Padding="{StaticResource PaddingInput}"
+                                         FontSize="{StaticResource FontSizeNormal}"
+                                         VerticalContentAlignment="Center"
+                                         CaretBrush="{StaticResource AccentColor}">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Type}" Value="Text">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Type}" Value="Number">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </Border>
 
-                            <!-- BOOL → CheckBox -->
+                            <!-- BOOL -->
                             <CheckBox VerticalAlignment="Center"
                                       Foreground="{StaticResource TextPrimary}"
                                       BorderBrush="{StaticResource BorderAccent}">
@@ -108,7 +101,7 @@
                                 </CheckBox.Style>
                             </CheckBox>
 
-                            <!-- DROPDOWN → ComboBox -->
+                            <!-- DROPDOWN -->
                             <ComboBox ItemsSource="{Binding Options}"
                                       SelectedItem="{Binding CurrentValue,
                                                      UpdateSourceTrigger=PropertyChanged}"
@@ -137,13 +130,18 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <!-- Bouton Exécuter -->
-            <Button Content="▶ Exécuter"
-                    Command="{Binding ExecuteActionCommand}"
-                    Style="{StaticResource ExecuteButton}"
-                    HorizontalAlignment="Left"
-                    Padding="{StaticResource PaddingButtonExecute}"
-                    Margin="0,10,0,0"/>
+            <!-- Boutons action -->
+            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                <Button Content="▶  Exécuter"
+                        Command="{Binding ExecuteActionCommand}"
+                        Style="{StaticResource ExecuteButton}"
+                        Padding="{StaticResource PaddingButtonExecute}"/>
+                <Button Content="📥  Export CSV"
+                        Command="{Binding ExportCsvCommand}"
+                        Style="{StaticResource ModernButton}"
+                        Padding="{StaticResource PaddingButtonSmall}"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
 
         </StackPanel>
     </Border>

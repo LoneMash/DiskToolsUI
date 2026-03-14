@@ -1,62 +1,63 @@
-<!-- Sizes.xaml - Version 1.1 -->
-<!-- Changelog : ResultLabelWidth passe de sys:Double à GridLength -->
-<!--             pour compatibilité avec ColumnDefinition Width=   -->
+<!-- Sizes.xaml - Version 2.0 -->
+<!-- Style C# Design Pro : coins arrondis 10-12px, espacements généreux -->
 
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!-- Largeur de la sidebar -->
-    <GridLength x:Key="SidebarWidth">250</GridLength>
-
-    <!-- Hauteur barre de titre -->
-    <GridLength x:Key="TitleBarHeight">40</GridLength>
+    <GridLength x:Key="SidebarWidth">220</GridLength>
 
     <!-- Hauteur barre de statut -->
-    <GridLength x:Key="StatusBarHeight">30</GridLength>
+    <GridLength x:Key="StatusBarHeight">32</GridLength>
 
     <!-- Tailles de police -->
     <sys:Double x:Key="FontSizeSmall">11</sys:Double>
     <sys:Double x:Key="FontSizeNormal">13</sys:Double>
     <sys:Double x:Key="FontSizeMedium">14</sys:Double>
     <sys:Double x:Key="FontSizeLarge">16</sys:Double>
-    <sys:Double x:Key="FontSizeTitle">20</sys:Double>
-    <sys:Double x:Key="FontSizeSection">12</sys:Double>
+    <sys:Double x:Key="FontSizeTitle">18</sys:Double>
+    <sys:Double x:Key="FontSizeSection">11</sys:Double>
+    <sys:Double x:Key="FontSizeCategory">9</sys:Double>
 
     <!-- Marges standards -->
     <Thickness x:Key="MarginPage">20</Thickness>
-    <Thickness x:Key="MarginSection">0,0,0,15</Thickness>
-    <Thickness x:Key="MarginItem">0,0,0,8</Thickness>
-    <Thickness x:Key="MarginSidebar">15</Thickness>
-    <Thickness x:Key="MarginSidebarTitle">15,15,15,10</Thickness>
-    <Thickness x:Key="MarginSidebarList">10,0,10,10</Thickness>
-    <Thickness x:Key="MarginResultsHeader">0,0,0,10</Thickness>
+    <Thickness x:Key="MarginSection">0,0,0,12</Thickness>
+    <Thickness x:Key="MarginItem">0,0,0,6</Thickness>
+    <Thickness x:Key="MarginSidebar">0</Thickness>
+    <Thickness x:Key="MarginSidebarTitle">16,16,16,10</Thickness>
+    <Thickness x:Key="MarginSidebarList">8,0,8,8</Thickness>
+    <Thickness x:Key="MarginResultsHeader">0,0,0,12</Thickness>
 
     <!-- Paddings standards -->
-    <Thickness x:Key="PaddingCard">15</Thickness>
+    <Thickness x:Key="PaddingCard">16</Thickness>
     <Thickness x:Key="PaddingButtonNormal">16,8</Thickness>
-    <Thickness x:Key="PaddingButtonSmall">12,4</Thickness>
-    <Thickness x:Key="PaddingButtonExecute">20,8</Thickness>
-    <Thickness x:Key="PaddingInput">8,5</Thickness>
-    <Thickness x:Key="PaddingStatusBar">10,5</Thickness>
-    <Thickness x:Key="PaddingTableCell">8,4</Thickness>
+    <Thickness x:Key="PaddingButtonSmall">12,6</Thickness>
+    <Thickness x:Key="PaddingButtonExecute">20,9</Thickness>
+    <Thickness x:Key="PaddingInput">10,7</Thickness>
+    <Thickness x:Key="PaddingStatusBar">12,6</Thickness>
+    <Thickness x:Key="PaddingTableCell">10,6</Thickness>
+    <Thickness x:Key="PaddingNavItem">10,8,10,8</Thickness>
 
-    <!-- Dimensions des champs de saisie (Double → pour Width/Height sur contrôles) -->
+    <!-- Dimensions des champs de saisie -->
     <sys:Double x:Key="InputWidth">200</sys:Double>
-    <sys:Double x:Key="InputHeight">30</sys:Double>
+    <sys:Double x:Key="InputHeight">32</sys:Double>
     <sys:Double x:Key="LabelWidth">150</sys:Double>
 
-    <!-- Dimensions des colonnes résultats (GridLength → pour ColumnDefinition Width) -->
+    <!-- Dimensions des colonnes résultats -->
     <GridLength x:Key="ResultLabelWidth">180</GridLength>
 
     <!-- Dimensions des boutons fenêtre -->
-    <sys:Double x:Key="WindowButtonWidth">40</sys:Double>
-    <sys:Double x:Key="WindowButtonHeight">30</sys:Double>
+    <sys:Double x:Key="WindowButtonWidth">36</sys:Double>
+    <sys:Double x:Key="WindowButtonHeight">28</sys:Double>
 
     <!-- Rayon des coins -->
-    <CornerRadius x:Key="CornerRadiusCard">4</CornerRadius>
-    <CornerRadius x:Key="CornerRadiusWindow">8</CornerRadius>
-    <CornerRadius x:Key="CornerRadiusTitleBar">8,8,0,0</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusCard">10</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusWindow">12</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusButton">8</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusInput">8</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusNavItem">8</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusTitleBar">12,12,0,0</CornerRadius>
 
     <!-- Épaisseurs de bordure -->
     <Thickness x:Key="BorderThicknessCard">1</Thickness>
@@ -66,5 +67,8 @@
 
     <!-- Taille icône chargement -->
     <sys:Double x:Key="LoadingIconSize">48</sys:Double>
+
+    <!-- Sidebar logo -->
+    <sys:Double x:Key="LogoIconSize">32</sys:Double>
 
 </ResourceDictionary>

@@ -1,5 +1,5 @@
-<!-- Buttons.xaml - Version 1.0 -->
-<!-- Styles de tous les boutons de l'application -->
+<!-- Buttons.xaml - Version 2.0 -->
+<!-- Style C# Design Pro : gradient buttons, glass secondary, rounded -->
 <!-- Dépend de Colors.xaml et Sizes.xaml -->
 
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -20,7 +20,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{StaticResource CornerRadiusCard}">
+                            CornerRadius="{StaticResource CornerRadiusButton}">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           Margin="{TemplateBinding Padding}"/>
@@ -32,48 +32,67 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
             </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource AccentColor}"/>
-            </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Opacity" Value="0.5"/>
+                <Setter Property="Opacity" Value="0.4"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
-    <!-- Bouton Exécuter : fond bleu -->
-    <Style x:Key="ExecuteButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
-        <Setter Property="Background"  Value="{StaticResource AccentColor}"/>
-        <Setter Property="FontWeight"  Value="SemiBold"/>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource AccentColorHover}"/>
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource AccentColorPressed}"/>
-            </Trigger>
-        </Style.Triggers>
+    <!-- Bouton Exécuter : gradient violet -->
+    <Style x:Key="ExecuteButton" TargetType="Button">
+        <Setter Property="Foreground"      Value="White"/>
+        <Setter Property="FontWeight"      Value="SemiBold"/>
+        <Setter Property="FontSize"        Value="{StaticResource FontSizeNormal}"/>
+        <Setter Property="Cursor"          Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{StaticResource AccentGradient}"
+                            CornerRadius="{StaticResource CornerRadiusButton}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Opacity" Value="0.85"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Opacity" Value="0.7"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Bd" Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
-    <!-- Bouton sidebar : alignement gauche, pas de hover qui écrase la sélection -->
+    <!-- Bouton sidebar navigation -->
     <Style x:Key="SidebarButton" TargetType="Button">
-        <Setter Property="Foreground"      Value="{StaticResource TextPrimary}"/>
-        <Setter Property="BorderBrush"     Value="{StaticResource BorderColor}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding"         Value="{StaticResource PaddingButtonNormal}"/>
+        <Setter Property="Foreground"      Value="{StaticResource TextSecondary}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding"         Value="{StaticResource PaddingNavItem}"/>
         <Setter Property="FontSize"        Value="{StaticResource FontSizeNormal}"/>
         <Setter Property="Cursor"          Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{StaticResource CornerRadiusCard}">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{StaticResource CornerRadiusNavItem}">
                         <ContentPresenter HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
                                           Margin="{TemplateBinding Padding}"/>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource ButtonHover}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -82,55 +101,59 @@
     <!-- Bouton fermeture fenêtre -->
     <Style x:Key="CloseButton" TargetType="Button">
         <Setter Property="Background"      Value="Transparent"/>
-        <Setter Property="Foreground"      Value="White"/>
+        <Setter Property="Foreground"      Value="{StaticResource TextMuted}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="FontSize"        Value="{StaticResource FontSizeMedium}"/>
-        <Setter Property="FontWeight"      Value="Bold"/>
+        <Setter Property="FontSize"        Value="{StaticResource FontSizeSmall}"/>
         <Setter Property="Cursor"          Value="Hand"/>
         <Setter Property="Width"           Value="{StaticResource WindowButtonWidth}"/>
         <Setter Property="Height"          Value="{StaticResource WindowButtonHeight}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource CloseButtonHover}"/>
+                            <Setter Property="Foreground" Value="{StaticResource CloseButtonIcon}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource CloseButtonHover}"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <!-- Bouton minimiser fenêtre -->
     <Style x:Key="MinimizeButton" TargetType="Button">
         <Setter Property="Background"      Value="Transparent"/>
-        <Setter Property="Foreground"      Value="White"/>
+        <Setter Property="Foreground"      Value="{StaticResource TextMuted}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="FontSize"        Value="{StaticResource FontSizeLarge}"/>
-        <Setter Property="FontWeight"      Value="Bold"/>
+        <Setter Property="FontSize"        Value="{StaticResource FontSizeMedium}"/>
         <Setter Property="Cursor"          Value="Hand"/>
         <Setter Property="Width"           Value="{StaticResource WindowButtonWidth}"/>
         <Setter Property="Height"          Value="{StaticResource WindowButtonHeight}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource ButtonHover}"/>
+                            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

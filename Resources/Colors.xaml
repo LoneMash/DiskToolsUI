@@ -1,38 +1,73 @@
-<!-- Colors.xaml - Version 1.0 -->
-<!-- Toutes les couleurs de l'application centralisées ici -->
+<!-- Colors.xaml - Version 2.0 -->
+<!-- Palette C# Design Pro : dark navy, accent violet/pourpre, glassmorphism -->
 <!-- Pour changer le thème : modifier uniquement ce fichier -->
 
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Couleurs de fond -->
-    <SolidColorBrush x:Key="BackgroundDark"       Color="#1E1E1E"/>
-    <SolidColorBrush x:Key="BackgroundMedium"     Color="#252526"/>
-    <SolidColorBrush x:Key="BackgroundLight"      Color="#2D2D30"/>
-    <SolidColorBrush x:Key="BackgroundInput"      Color="#3F3F46"/>
+    <Color x:Key="BackgroundDarkColor">#0B0E14</Color>
+    <Color x:Key="BackgroundMediumColor">#1A1F36</Color>
+    <Color x:Key="BackgroundLightColor">#131825</Color>
+    <Color x:Key="BackgroundInputColor">#131825</Color>
 
-    <!-- Couleur d'accentuation -->
-    <SolidColorBrush x:Key="AccentColor"          Color="#f5ee25"/>
-    <SolidColorBrush x:Key="AccentColorHover"     Color="#005A9E"/>
-    <SolidColorBrush x:Key="AccentColorPressed"   Color="#004E8C"/>
+    <SolidColorBrush x:Key="BackgroundDark"       Color="{StaticResource BackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="BackgroundMedium"      Color="{StaticResource BackgroundMediumColor}"/>
+    <SolidColorBrush x:Key="BackgroundLight"       Color="{StaticResource BackgroundLightColor}"/>
+    <SolidColorBrush x:Key="BackgroundInput"       Color="{StaticResource BackgroundInputColor}"/>
+
+    <!-- Sidebar gradient -->
+    <LinearGradientBrush x:Key="SidebarGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#1A1F36" Offset="0"/>
+        <GradientStop Color="#0F1528" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Couleur d'accentuation : violet/pourpre -->
+    <Color x:Key="AccentStartColor">#6C5CE7</Color>
+    <Color x:Key="AccentEndColor">#A855F7</Color>
+
+    <SolidColorBrush x:Key="AccentColor"          Color="#6C5CE7"/>
+    <SolidColorBrush x:Key="AccentColorHover"      Color="#7C6CF7"/>
+    <SolidColorBrush x:Key="AccentColorPressed"    Color="#5B4BD6"/>
+
+    <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource AccentStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource AccentEndColor}" Offset="1"/>
+    </LinearGradientBrush>
 
     <!-- Couleurs de texte -->
-    <SolidColorBrush x:Key="TextPrimary"          Color="#005A9E"/>
-    <SolidColorBrush x:Key="TextSecondary"        Color="#007ACC"/>
-    <SolidColorBrush x:Key="TextMuted"            Color="#808080"/>
+    <SolidColorBrush x:Key="TextPrimary"          Color="#E2E8F0"/>
+    <SolidColorBrush x:Key="TextSecondary"        Color="#94A3B8"/>
+    <SolidColorBrush x:Key="TextMuted"            Color="#64748B"/>
+    <SolidColorBrush x:Key="TextAccent"           Color="#6C5CE7"/>
 
     <!-- Couleurs de bordure -->
-    <SolidColorBrush x:Key="BorderColor"          Color="#3F3F46"/>
-    <SolidColorBrush x:Key="BorderAccent"         Color="#007ACC"/>
+    <SolidColorBrush x:Key="BorderColor"          Color="#1E2642"/>
+    <SolidColorBrush x:Key="BorderAccent"         Color="#2A3358"/>
+    <SolidColorBrush x:Key="BorderSubtle"         Color="#1A2038"/>
+
+    <!-- Glass card -->
+    <SolidColorBrush x:Key="GlassBackground"      Color="#0D1220"/>
+    <SolidColorBrush x:Key="GlassBorder"          Color="#1E2642"/>
 
     <!-- Couleurs des boutons -->
-    <SolidColorBrush x:Key="ButtonBackground"     Color="#2D2D30"/>
-    <SolidColorBrush x:Key="ButtonHover"          Color="#3E3E42"/>
+    <SolidColorBrush x:Key="ButtonBackground"     Color="#1A1F36"/>
+    <SolidColorBrush x:Key="ButtonHover"          Color="#242B47"/>
 
     <!-- Couleur fermeture fenêtre -->
-    <SolidColorBrush x:Key="CloseButtonHover"     Color="#E81123"/>
+    <SolidColorBrush x:Key="CloseButtonHover"     Color="#3B1520"/>
+    <SolidColorBrush x:Key="CloseButtonIcon"      Color="#EF4444"/>
+
+    <!-- Sidebar active item -->
+    <LinearGradientBrush x:Key="SidebarActiveBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+        <GradientStop Color="#2D2466" Offset="0"/>
+        <GradientStop Color="Transparent" Offset="1"/>
+    </LinearGradientBrush>
 
     <!-- Overlay chargement -->
-    <SolidColorBrush x:Key="LoadingOverlay"       Color="#AA000000"/>
+    <SolidColorBrush x:Key="LoadingOverlay"       Color="#DD0B0E14"/>
+
+    <!-- Couleur positive (pourcentages OK) -->
+    <SolidColorBrush x:Key="PositiveColor"        Color="#34D399"/>
 
 </ResourceDictionary>

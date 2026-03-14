@@ -6,32 +6,22 @@
       "description": "Récupère les informations détaillées du disque spécifié (taille, espace, système de fichiers).",
       "scriptPath": "Scripts\\PowerShell_Base.ps1",
       "functionName": "Get-DiskInfo",
+      "category": "DISQUE",
+      "icon": "\uD83D\uDCBF",
       "parameters": [
-        {
-          "name": "DriveLetter",
-          "label": "Lettre du lecteur",
-          "type": "Text",
-          "defaultValue": "C",
-          "required": true,
-          "options": []
-        }
+        { "name": "DriveLetter", "label": "Lettre du lecteur", "type": "Text", "defaultValue": "C", "required": true, "options": [] }
       ]
     },
     {
       "id": "disk-serial",
-      "name": "Numéro de série disque",
+      "name": "N° de série",
       "description": "Récupère le numéro de série (volume et hardware) du disque spécifié.",
       "scriptPath": "Scripts\\PowerShell_Base.ps1",
       "functionName": "Get-DiskSerial",
+      "category": "DISQUE",
+      "icon": "\uD83D\uDD11",
       "parameters": [
-        {
-          "name": "DriveLetter",
-          "label": "Lettre du lecteur",
-          "type": "Text",
-          "defaultValue": "C",
-          "required": true,
-          "options": []
-        }
+        { "name": "DriveLetter", "label": "Lettre du lecteur", "type": "Text", "defaultValue": "C", "required": true, "options": [] }
       ]
     },
     {
@@ -40,32 +30,22 @@
       "description": "Affiche l'espace libre avec indicateur de statut pour le lecteur spécifié.",
       "scriptPath": "Scripts\\PowerShell_Base.ps1",
       "functionName": "Get-FreeSpace",
+      "category": "DISQUE",
+      "icon": "\uD83D\uDCCA",
       "parameters": [
-        {
-          "name": "DriveLetter",
-          "label": "Lettre du lecteur",
-          "type": "Text",
-          "defaultValue": "C",
-          "required": true,
-          "options": []
-        }
+        { "name": "DriveLetter", "label": "Lettre du lecteur", "type": "Text", "defaultValue": "C", "required": true, "options": [] }
       ]
     },
     {
       "id": "complete-stats",
-      "name": "Statistiques complètes",
+      "name": "Stats complètes",
       "description": "Récupère toutes les statistiques du disque (espace, série, état).",
       "scriptPath": "Scripts\\PowerShell_Base.ps1",
       "functionName": "Get-CompleteStats",
+      "category": "DISQUE",
+      "icon": "\uD83D\uDCC8",
       "parameters": [
-        {
-          "name": "DriveLetter",
-          "label": "Lettre du lecteur",
-          "type": "Text",
-          "defaultValue": "C",
-          "required": true,
-          "options": []
-        }
+        { "name": "DriveLetter", "label": "Lettre du lecteur", "type": "Text", "defaultValue": "C", "required": true, "options": [] }
       ]
     },
     {
@@ -74,31 +54,30 @@
       "description": "Liste tous les lecteurs locaux, amovibles et réseau avec leur espace.",
       "scriptPath": "Scripts\\PowerShell_Base.ps1",
       "functionName": "Get-AllDisks",
+      "category": "SYSTÈME",
+      "icon": "\uD83D\uDDA5\uFE0F",
       "parameters": []
     },
     {
       "id": "windows-kb",
-      "name": "KB Windows installées",
+      "name": "KB Windows",
       "description": "Liste toutes les mises à jour KB présentes sur le poste.",
       "scriptPath": "Scripts\\PowerShell_Base.ps1",
       "functionName": "Get-InstalledKB",
+      "category": "SYSTÈME",
+      "icon": "\uD83D\uDD04",
       "parameters": [
-        {
-          "name": "Filter",
-          "label": "Filtre KB (optionnel)",
-          "type": "Text",
-          "defaultValue": "",
-          "required": false,
-          "options": []
-        }
+        { "name": "Filter", "label": "Filtre KB (optionnel)", "type": "Text", "defaultValue": "", "required": false, "options": [] }
       ]
     },
     {
       "id": "system-info",
-      "name": "Informations système",
+      "name": "Infos système",
       "description": "Récupère les informations générales du poste (OS, RAM, CPU).",
       "scriptPath": "Scripts\\PowerShell_Base.ps1",
       "functionName": "Get-SystemInfo",
+      "category": "SYSTÈME",
+      "icon": "\u2699\uFE0F",
       "parameters": []
     }
   ]
