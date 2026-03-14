@@ -1,16 +1,17 @@
-// Version 1.0
+// Version 2.0
 // Changelog :
 //   1.0 - v3.00 : Création — remplace ParameterItem, désormais piloté par actions.json
 //                 Ajout de Type, Required, Options (pour Dropdown)
+//   2.0 - Adoption CommunityToolkit.Mvvm : ObservableObject + [ObservableProperty]
 
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DiskToolsUi.Models
 {
-    public class ParameterDefinition : INotifyPropertyChanged
+    public partial class ParameterDefinition : ObservableObject
     {
+        [ObservableProperty]
         private string _currentValue = string.Empty;
 
         /// <summary>Nom technique du paramètre PowerShell (ex: "DriveLetter")</summary>
@@ -30,20 +31,5 @@ namespace DiskToolsUi.Models
 
         /// <summary>Options disponibles pour le type Dropdown</summary>
         public List<string> Options { get; set; } = new();
-
-        /// <summary>Valeur saisie/sélectionnée par l'utilisateur — notifiable pour le binding</summary>
-        public string CurrentValue
-        {
-            get => _currentValue;
-            set
-            {
-                _currentValue = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
