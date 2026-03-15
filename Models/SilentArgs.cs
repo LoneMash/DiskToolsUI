@@ -40,6 +40,8 @@ namespace RunDeck.Models
                     case "--help":
                     case "-h":
                     case "-?":
+                    case "/?":
+                    case "/help":
                         result.ShowHelp = true;
                         break;
 
