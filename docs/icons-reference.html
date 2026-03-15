@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>RunDeck — Référence des icônes pour actions.json</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0B0E14; color:#E2E8F0; font-family:'Segoe UI',sans-serif; padding:30px; }
+  h1 { text-align:center; font-size:24px; margin-bottom:6px; }
+  .subtitle { text-align:center; color:#64748B; margin-bottom:8px; font-size:13px; }
+  .usage { max-width:700px; margin:0 auto 30px; background:#0D1220; border:1px solid #1E2642; border-radius:10px; padding:16px 20px; font-size:12px; color:#94A3B8; line-height:1.6; }
+  .usage code { background:#131825; color:#A855F7; padding:2px 6px; border-radius:4px; font-family:'Cascadia Code','Consolas',monospace; font-size:11px; }
+  .usage .example { background:#131825; border:1px solid #1E2642; border-radius:8px; padding:10px 14px; margin-top:10px; font-family:'Cascadia Code','Consolas',monospace; font-size:11px; color:#E2E8F0; white-space:pre; overflow-x:auto; }
+
+  .category { margin-bottom:28px; }
+  .category-title { font-size:11px; font-weight:600; color:#64748B; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; padding-left:4px; border-left:3px solid #6C5CE7; padding-left:10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(170px, 1fr)); gap:8px; }
+  .icon-card { background:#0D1220; border:1px solid #1E2642; border-radius:8px; padding:10px 12px; display:flex; align-items:center; gap:10px; cursor:default; transition:border-color .2s; }
+  .icon-card:hover { border-color:#6C5CE7; }
+  .icon-card .emoji { font-size:22px; min-width:30px; text-align:center; }
+  .icon-card .info { flex:1; min-width:0; }
+  .icon-card .name { font-size:11px; color:#E2E8F0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .icon-card .code { font-size:10px; color:#6C5CE7; font-family:'Cascadia Code','Consolas',monospace; margin-top:2px; }
+
+  .footer { text-align:center; color:#475569; font-size:10px; margin-top:30px; }
+</style>
+</head>
+<body>
+
+<h1>RunDeck — Référence des icônes</h1>
+<p class="subtitle">Icônes utilisables dans le champ <code>"icon"</code> de actions.json</p>
+
+<div class="usage">
+  <strong style="color:#E2E8F0;">Comment utiliser :</strong> Copiez le <strong>code JSON</strong> ou l'<strong>emoji directement</strong> dans le champ <code>"icon"</code> de votre action dans <code>actions.json</code>.
+  <div class="example">{
+  "id": "mon-action",
+  "name": "Mon action",
+  "icon": "🔧",        ← coller l'emoji ici
+  ...
+}</div>
+</div>
+
+<!-- DISQUE & STOCKAGE -->
+<div class="category">
+  <div class="category-title">Disque & Stockage</div>
+  <div class="grid">
+    <div class="icon-card"><span class="emoji">💿</span><div class="info"><div class="name">CD / Disque</div><div class="code">\uD83D\uDCBF</div></div></div>
+    <div class="icon-card"><span class="emoji">💾</span><div class="info"><div class="name">Disquette / Sauvegarde</div><div class="code">\uD83D\uDCBE</div></div></div>
+    <div class="icon-card"><span class="emoji">🗄️</span><div class="info"><div class="name">Stockage / Serveur</div><div class="code">\uD83D\uDDC4\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">📀</span><div class="info"><div class="name">DVD / Média</div><div class="code">\uD83D\uDCC0</div></div></div>
+    <div class="icon-card"><span class="emoji">🗃️</span><div class="info"><div class="name">Fichiers / Archive</div><div class="code">\uD83D\uDDC3\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">📦</span><div class="info"><div class="name">Package / Paquet</div><div class="code">\uD83D\uDCE6</div></div></div>
+  </div>
+</div>
+
+<!-- SYSTÈME & MATÉRIEL -->
+<div class="category">
+  <div class="category-title">Système & Matériel</div>
+  <div class="grid">
+    <div class="icon-card"><span class="emoji">🖥️</span><div class="info"><div class="name">Ordinateur / Poste</div><div class="code">\uD83D\uDDA5\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">💻</span><div class="info"><div class="name">Laptop</div><div class="code">\uD83D\uDCBB</div></div></div>
+    <div class="icon-card"><span class="emoji">⚙️</span><div class="info"><div class="name">Paramètres / Config</div><div class="code">\u2699\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">🔧</span><div class="info"><div class="name">Outil / Maintenance</div><div class="code">\uD83D\uDD27</div></div></div>
+    <div class="icon-card"><span class="emoji">🛠️</span><div class="info"><div class="name">Outils / Réparation</div><div class="code">\uD83D\uDEE0\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">🧰</span><div class="info"><div class="name">Boîte à outils</div><div class="code">\uD83E\uDDF0</div></div></div>
+    <div class="icon-card"><span class="emoji">🔌</span><div class="info"><div class="name">Connexion / Prise</div><div class="code">\uD83D\uDD0C</div></div></div>
+    <div class="icon-card"><span class="emoji">🖨️</span><div class="info"><div class="name">Imprimante</div><div class="code">\uD83D\uDDA8\uFE0F</div></div></div>
+  </div>
+</div>
+
+<!-- RÉSEAU & SÉCURITÉ -->
+<div class="category">
+  <div class="category-title">Réseau & Sécurité</div>
+  <div class="grid">
+    <div class="icon-card"><span class="emoji">🌐</span><div class="info"><div class="name">Réseau / Internet</div><div class="code">\uD83C\uDF10</div></div></div>
+    <div class="icon-card"><span class="emoji">📡</span><div class="info"><div class="name">Antenne / Signal</div><div class="code">\uD83D\uDCE1</div></div></div>
+    <div class="icon-card"><span class="emoji">🔒</span><div class="info"><div class="name">Sécurité / Verrou</div><div class="code">\uD83D\uDD12</div></div></div>
+    <div class="icon-card"><span class="emoji">🔓</span><div class="info"><div class="name">Déverrouillé</div><div class="code">\uD83D\uDD13</div></div></div>
+    <div class="icon-card"><span class="emoji">🔑</span><div class="info"><div class="name">Clé / Série</div><div class="code">\uD83D\uDD11</div></div></div>
+    <div class="icon-card"><span class="emoji">🛡️</span><div class="info"><div class="name">Protection / Shield</div><div class="code">\uD83D\uDEE1\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">🔐</span><div class="info"><div class="name">Cadenas fermé</div><div class="code">\uD83D\uDD10</div></div></div>
+    <div class="icon-card"><span class="emoji">👤</span><div class="info"><div class="name">Utilisateur</div><div class="code">\uD83D\uDC64</div></div></div>
+    <div class="icon-card"><span class="emoji">👥</span><div class="info"><div class="name">Utilisateurs / Groupe</div><div class="code">\uD83D\uDC65</div></div></div>
+  </div>
+</div>
+
+<!-- MONITORING & DONNÉES -->
+<div class="category">
+  <div class="category-title">Monitoring & Données</div>
+  <div class="grid">
+    <div class="icon-card"><span class="emoji">📊</span><div class="info"><div class="name">Graphique barres</div><div class="code">\uD83D\uDCCA</div></div></div>
+    <div class="icon-card"><span class="emoji">📈</span><div class="info"><div class="name">Tendance hausse</div><div class="code">\uD83D\uDCC8</div></div></div>
+    <div class="icon-card"><span class="emoji">📉</span><div class="info"><div class="name">Tendance baisse</div><div class="code">\uD83D\uDCC9</div></div></div>
+    <div class="icon-card"><span class="emoji">🔍</span><div class="info"><div class="name">Recherche / Audit</div><div class="code">\uD83D\uDD0D</div></div></div>
+    <div class="icon-card"><span class="emoji">📋</span><div class="info"><div class="name">Presse-papier / Liste</div><div class="code">\uD83D\uDCCB</div></div></div>
+    <div class="icon-card"><span class="emoji">📄</span><div class="info"><div class="name">Document / Rapport</div><div class="code">\uD83D\uDCC4</div></div></div>
+    <div class="icon-card"><span class="emoji">🧾</span><div class="info"><div class="name">Reçu / Log</div><div class="code">\uD83E\uDDFE</div></div></div>
+    <div class="icon-card"><span class="emoji">📝</span><div class="info"><div class="name">Notes / Écriture</div><div class="code">\uD83D\uDCDD</div></div></div>
+  </div>
+</div>
+
+<!-- ACTIONS & PROCESSUS -->
+<div class="category">
+  <div class="category-title">Actions & Processus</div>
+  <div class="grid">
+    <div class="icon-card"><span class="emoji">▶️</span><div class="info"><div class="name">Exécuter / Play</div><div class="code">\u25B6\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">🔄</span><div class="info"><div class="name">Rafraîchir / Sync</div><div class="code">\uD83D\uDD04</div></div></div>
+    <div class="icon-card"><span class="emoji">⏱️</span><div class="info"><div class="name">Chronomètre / Timer</div><div class="code">\u23F1\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">🔃</span><div class="info"><div class="name">Rechargement</div><div class="code">\uD83D\uDD03</div></div></div>
+    <div class="icon-card"><span class="emoji">⚡</span><div class="info"><div class="name">Éclair / Rapide</div><div class="code">\u26A1</div></div></div>
+    <div class="icon-card"><span class="emoji">🚀</span><div class="info"><div class="name">Lancement / Deploy</div><div class="code">\uD83D\uDE80</div></div></div>
+    <div class="icon-card"><span class="emoji">🗑️</span><div class="info"><div class="name">Supprimer / Corbeille</div><div class="code">\uD83D\uDDD1\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">📥</span><div class="info"><div class="name">Import / Télécharger</div><div class="code">\uD83D\uDCE5</div></div></div>
+    <div class="icon-card"><span class="emoji">📤</span><div class="info"><div class="name">Export / Envoyer</div><div class="code">\uD83D\uDCE4</div></div></div>
+  </div>
+</div>
+
+<!-- STATUT & ALERTES -->
+<div class="category">
+  <div class="category-title">Statut & Alertes</div>
+  <div class="grid">
+    <div class="icon-card"><span class="emoji">✅</span><div class="info"><div class="name">Succès / OK</div><div class="code">\u2705</div></div></div>
+    <div class="icon-card"><span class="emoji">❌</span><div class="info"><div class="name">Erreur / Échec</div><div class="code">\u274C</div></div></div>
+    <div class="icon-card"><span class="emoji">⚠️</span><div class="info"><div class="name">Attention / Warning</div><div class="code">\u26A0\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">ℹ️</span><div class="info"><div class="name">Information</div><div class="code">\u2139\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">🔔</span><div class="info"><div class="name">Notification</div><div class="code">\uD83D\uDD14</div></div></div>
+    <div class="icon-card"><span class="emoji">🏷️</span><div class="info"><div class="name">Tag / Étiquette</div><div class="code">\uD83C\uDFF7\uFE0F</div></div></div>
+  </div>
+</div>
+
+<!-- DOSSIERS & FICHIERS -->
+<div class="category">
+  <div class="category-title">Dossiers & Fichiers</div>
+  <div class="grid">
+    <div class="icon-card"><span class="emoji">📁</span><div class="info"><div class="name">Dossier</div><div class="code">\uD83D\uDCC1</div></div></div>
+    <div class="icon-card"><span class="emoji">📂</span><div class="info"><div class="name">Dossier ouvert</div><div class="code">\uD83D\uDCC2</div></div></div>
+    <div class="icon-card"><span class="emoji">🗂️</span><div class="info"><div class="name">Classeur / Index</div><div class="code">\uD83D\uDDC2\uFE0F</div></div></div>
+    <div class="icon-card"><span class="emoji">📎</span><div class="info"><div class="name">Trombone / Pièce jointe</div><div class="code">\uD83D\uDCCE</div></div></div>
+    <div class="icon-card"><span class="emoji">🔗</span><div class="info"><div class="name">Lien / URL</div><div class="code">\uD83D\uDD17</div></div></div>
+  </div>
+</div>
+
+<!-- ÉNERGIE & BATTERIE -->
+<div class="category">
+  <div class="category-title">Énergie & Temps</div>
+  <div class="grid">
+    <div class="icon-card"><span class="emoji">🔋</span><div class="info"><div class="name">Batterie</div><div class="code">\uD83D\uDD0B</div></div></div>
+    <div class="icon-card"><span class="emoji">🪫</span><div class="info"><div class="name">Batterie faible</div><div class="code">\uD83E\uDEAB</div></div></div>
+    <div class="icon-card"><span class="emoji">🕐</span><div class="info"><div class="name">Horloge / Uptime</div><div class="code">\uD83D\uDD50</div></div></div>
+    <div class="icon-card"><span class="emoji">📅</span><div class="info"><div class="name">Calendrier / Date</div><div class="code">\uD83D\uDCC5</div></div></div>
+  </div>
+</div>
+
+<div class="footer">RunDeck — 50 icônes de référence — Ouvrir ce fichier dans un navigateur pour prévisualiser</div>
+
+</body>
+</html>
