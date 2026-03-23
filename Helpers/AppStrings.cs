@@ -44,6 +44,9 @@ namespace RunDeck.Helpers
         public static string WarningMissingParams(string list) => $"Les paramètres suivants sont obligatoires :\n  • {list}";
         public const string WarningMissingParamsTitle = "Paramètres manquants";
 
+        // Sidebar
+        public const string SearchPlaceholder = "Rechercher une action...";
+
         // Thèmes
         public const string ThemeLightLabel = "Thème clair";
         public const string ThemeDarkLabel  = "Thème sombre";

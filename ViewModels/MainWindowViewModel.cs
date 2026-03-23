@@ -79,6 +79,10 @@ namespace RunDeck.ViewModels
         [NotifyCanExecuteChangedFor(nameof(ExecuteActionCommand))]
         private ActionDefinition? _selectedAction;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsSearchActive))]
+        private string _searchText = string.Empty;
+
         public MainWindowViewModel(
             ILoggerService logger,
             IConfigService configService,
@@ -116,6 +120,23 @@ namespace RunDeck.ViewModels
 
         /// <summary>Description de l'action sélectionnée, affichée dans ParametersView</summary>
         public string ActionDescription => SelectedAction?.Description ?? string.Empty;
+
+        /// <summary>True si un filtre de recherche est actif dans la sidebar</summary>
+        public bool IsSearchActive => !string.IsNullOrWhiteSpace(SearchText);
+
+        /// <summary>Appelé automatiquement par CommunityToolkit quand SearchText change.</summary>
+        partial void OnSearchTextChanged(string value)
+        {
+            if (GroupedActions == null) return;
+
+            GroupedActions.Filter = string.IsNullOrWhiteSpace(value)
+                ? null
+                : obj => obj is ActionDefinition a &&
+                          (a.Name.Contains(value, StringComparison.OrdinalIgnoreCase) ||
+                           a.Category.Contains(value, StringComparison.OrdinalIgnoreCase));
+
+            GroupedActions.Refresh();
+        }
 
         // -----------------------------------------------------------------------
         // Initialisation asynchrone
@@ -340,6 +361,9 @@ namespace RunDeck.ViewModels
             if (e.PropertyName == nameof(ParameterDefinition.CurrentValue))
                 ExecuteActionCommand.NotifyCanExecuteChanged();
         }
+
+        [RelayCommand]
+        private void ClearSearch() => SearchText = string.Empty;
 
         // -----------------------------------------------------------------------
         // Helpers
