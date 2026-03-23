@@ -1,3 +1,11 @@
+// ═══════════════════════════════════════════════════════════════════
+// ConfigService.cs — Chargement de la configuration applicative
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Désérialise appsettings.json (config générale) et actions.json
+//        (définitions des actions) en modèles typés pour le reste de l'app.
+// Couche : Services
+// Consommé par : MainWindowViewModel, SilentRunner
+// ═══════════════════════════════════════════════════════════════════
 // Version 2.0
 // Changelog :
 //   1.0 - Initial : chargement appsettings.json uniquement
@@ -12,12 +20,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using RunDeck.Helpers;
+using RunDeck.Interfaces;
 using RunDeck.Models;
 
 
 namespace RunDeck.Services
 {
-    public class ConfigService
+    public class ConfigService : IConfigService
     {
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {

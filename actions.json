@@ -59,6 +59,16 @@
       "parameters": []
     },
     {
+      "id": "usb-history",
+      "name": "Historique USB",
+      "description": "Liste tous les supports USB ayant été branchés sur ce poste (nom, série, dernière connexion).",
+      "scriptPath": "Scripts\\PowerShell_Base.ps1",
+      "functionName": "Get-UsbHistory",
+      "category": "SYSTÈME",
+      "icon": "\uD83D\uDD0C",
+      "parameters": []
+    },
+    {
       "id": "windows-kb",
       "name": "KB Windows",
       "description": "Liste toutes les mises à jour KB présentes sur le poste.",
@@ -79,6 +89,43 @@
       "category": "SYSTÈME",
       "icon": "\u2699\uFE0F",
       "parameters": []
+    },
+    {
+      "id": "ping-live",
+      "name": "Ping Live",
+      "description": "Ping en temps réel avec affichage progressif (localhost par défaut).",
+      "scriptPath": "Scripts\\PowerShell_Base.ps1",
+      "functionName": "Get-PingLive",
+      "category": "RÉSEAU",
+      "icon": "\uD83C\uDF10",
+      "parameters": [
+        { "name": "Target", "label": "Cible (IP ou hostname)", "type": "Text", "defaultValue": "localhost", "required": false, "options": [] },
+        { "name": "Count", "label": "Nombre de pings", "type": "Text", "defaultValue": "20", "required": false, "options": [] }
+      ]
+    },
+    {
+      "id": "licence-windows",
+      "name": "Licence Windows",
+      "description": "Affiche les informations de licence Windows (slmgr /dlv).",
+      "scriptPath": "Scripts\\PowerShell_Base.ps1",
+      "functionName": "Get-ExternalCommand",
+      "category": "SYSTÈME",
+      "icon": "\uD83D\uDDDD\uFE0F",
+      "parameters": [
+        { "name": "Command", "label": "Commande", "type": "Text", "defaultValue": "cscript //nologo C:\\Windows\\System32\\slmgr.vbs /dlv", "required": true, "options": [] }
+      ]
+    },
+    {
+      "id": "run-command",
+      "name": "Commande externe",
+      "description": "Exécute une commande système et affiche le résultat (cmd, vbs, bat...).",
+      "scriptPath": "Scripts\\PowerShell_Base.ps1",
+      "functionName": "Get-ExternalCommand",
+      "category": "OUTILS",
+      "icon": "\u25B6\uFE0F",
+      "parameters": [
+        { "name": "Command", "label": "Commande à exécuter", "type": "Text", "defaultValue": "", "required": true, "options": [] }
+      ]
     }
   ]
 }

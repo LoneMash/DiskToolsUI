@@ -1,24 +1,17 @@
 // ═══════════════════════════════════════════════════════════════════
-// ParametersView.xaml.cs — Code-behind du panneau de paramètres
+// IThemeService.cs — Contrat de gestion du thème visuel (clair/sombre)
 // ═══════════════════════════════════════════════════════════════════
-// Rôle : Initialise le UserControl des paramètres d'action. Toute
-//        la logique métier est déléguée au MainWindowViewModel.
-// Couche : Views
-// Consommé par : MainWindow.xaml (intégré dans le layout central)
+// Rôle : Expose l'état du thème actif et permet de basculer entre
+//        le thème clair et le thème sombre à chaud.
+// Couche : Interfaces
+// Consommé par : ThemeService, MainWindowViewModel, SidebarView
 // ═══════════════════════════════════════════════════════════════════
 
-// ParametersView.xaml.cs - Version 1.0
-// Changelog : Code-behind minimal, logique dans MainWindowViewModel
-
-using System.Windows.Controls;
-
-namespace RunDeck.Views
+namespace RunDeck.Interfaces
 {
-    public partial class ParametersView : UserControl
+    public interface IThemeService
     {
-        public ParametersView()
-        {
-            InitializeComponent();
-        }
+        bool IsDark { get; }
+        void ToggleTheme();
     }
 }

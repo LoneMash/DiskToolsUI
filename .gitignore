@@ -1,9 +1,13 @@
 # Ignorer tous les fichiers .log
 *.log
-# Ignorer le répertoire build
+
+# Ignorer les répertoires de build et publication
 build/
 bin/
 obj/
+publish/
+
+# IDE et outils
 .vs/
 .vscode/
 *.user

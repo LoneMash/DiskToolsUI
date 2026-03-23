@@ -1,24 +1,23 @@
 // ═══════════════════════════════════════════════════════════════════
-// ParametersView.xaml.cs — Code-behind du panneau de paramètres
+// ILoggerService.cs — Contrat de journalisation applicative
 // ═══════════════════════════════════════════════════════════════════
-// Rôle : Initialise le UserControl des paramètres d'action. Toute
-//        la logique métier est déléguée au MainWindowViewModel.
-// Couche : Views
-// Consommé par : MainWindow.xaml (intégré dans le layout central)
+// Rôle : Définit les opérations de logging (info, erreur, exception)
+//        utilisées dans toute l'application pour tracer l'activité.
+// Couche : Interfaces
+// Consommé par : LoggerService, MainWindowViewModel, PowerShellRunner
 // ═══════════════════════════════════════════════════════════════════
 
-// ParametersView.xaml.cs - Version 1.0
-// Changelog : Code-behind minimal, logique dans MainWindowViewModel
+using System;
 
-using System.Windows.Controls;
-
-namespace RunDeck.Views
+namespace RunDeck.Interfaces
 {
-    public partial class ParametersView : UserControl
+    public interface ILoggerService
     {
-        public ParametersView()
-        {
-            InitializeComponent();
-        }
+        void LogInfo(string message);
+        void LogError(string message);
+        void LogError(Exception ex);
+        void LogError(string message, Exception ex);
+        void Log(string message);
+        void Log(Exception ex);
     }
 }

@@ -1,3 +1,11 @@
+// ═══════════════════════════════════════════════════════════════════
+// SilentRunner.cs — Mode CLI sans interface graphique
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Orchestre l'exécution des actions en ligne de commande (--silent).
+//        Supporte --action, --all, --list, --help, et l'export CSV/JSON.
+// Couche : Services
+// Consommé par : App.xaml.cs (détection des arguments CLI au démarrage)
+// ═══════════════════════════════════════════════════════════════════
 // SilentRunner.cs - Version 4.0
 // Changelog :
 //   1.0 - Initial
@@ -13,16 +21,17 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using RunDeck.Interfaces;
 using RunDeck.Models;
 
 namespace RunDeck.Services
 {
     public class SilentRunner
     {
-        private readonly ConfigService _configService;
-        private readonly PowerShellRunner _psRunner;
-        private readonly CsvExportService _csvExport;
-        private readonly LoggerService _logger;
+        private readonly IConfigService _configService;
+        private readonly IPowerShellRunner _psRunner;
+        private readonly ICsvExportService _csvExport;
+        private readonly ILoggerService _logger;
 
         private static readonly JsonSerializerOptions _jsonWriteOptions = new()
         {
@@ -30,12 +39,16 @@ namespace RunDeck.Services
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
 
-        public SilentRunner()
+        public SilentRunner(
+            ILoggerService logger,
+            IConfigService configService,
+            IPowerShellRunner psRunner,
+            ICsvExportService csvExport)
         {
-            _logger        = new LoggerService();
-            _configService = new ConfigService();
-            _psRunner      = new PowerShellRunner(_logger);
-            _csvExport     = new CsvExportService();
+            _logger        = logger;
+            _configService = configService;
+            _psRunner      = psRunner;
+            _csvExport     = csvExport;
         }
 
         public async Task<int> RunAsync(SilentArgs args)
@@ -80,7 +93,7 @@ namespace RunDeck.Services
             }
             finally
             {
-                _psRunner.Dispose();
+                // Le cycle de vie de _psRunner est géré par le conteneur DI
             }
         }
 
@@ -200,15 +213,16 @@ namespace RunDeck.Services
                     sb.AppendLine($"# {actionId}");
                     foreach (var item in results)
                     {
-                        if (item.IsTable)
+                        switch (item)
                         {
-                            sb.AppendLine(string.Join(";", item.Columns));
-                            foreach (var row in item.Rows)
-                                sb.AppendLine(string.Join(";", row.Cells));
-                        }
-                        else if (!item.IsLog)
-                        {
-                            sb.AppendLine($"{item.Label};{item.Value}");
+                            case TableResult table:
+                                sb.AppendLine(string.Join(";", table.Columns));
+                                foreach (var row in table.Rows)
+                                    sb.AppendLine(string.Join(";", row.Cells));
+                                break;
+                            case KeyValueResult kv:
+                                sb.AppendLine($"{kv.Label};{kv.Value}");
+                                break;
                         }
                     }
                     sb.AppendLine();
@@ -229,20 +243,18 @@ namespace RunDeck.Services
 
         private static object ResultToDict(ResultItem item)
         {
-            if (item.IsTable)
+            return item switch
             {
-                return new
+                TableResult table => new
                 {
                     type = "table",
-                    columns = item.Columns.ToList(),
-                    rows = item.Rows.Select(r => r.Cells.ToList()).ToList()
-                };
-            }
-            if (item.IsLog)
-            {
-                return new { type = "log", text = item.RawText };
-            }
-            return new { label = item.Label, value = item.Value };
+                    columns = table.Columns.ToList(),
+                    rows = table.Rows.Select(r => r.Cells.ToList()).ToList()
+                },
+                LogResult log => new { type = "log", text = log.RawText },
+                KeyValueResult kv => new { label = kv.Label, value = kv.Value } as object,
+                _ => new { type = "unknown" }
+            };
         }
 
         // -------------------------------------------------------------------
@@ -286,20 +298,20 @@ namespace RunDeck.Services
         {
             foreach (var item in results)
             {
-                if (item.IsTable)
+                switch (item)
                 {
-                    Console.WriteLine(string.Join(" | ", item.Columns));
-                    Console.WriteLine(new string('-', 80));
-                    foreach (var row in item.Rows)
-                        Console.WriteLine(string.Join(" | ", row.Cells));
-                }
-                else if (item.IsLog)
-                {
-                    Console.WriteLine(item.RawText);
-                }
-                else
-                {
-                    Console.WriteLine($"  {item.Label,-30} : {item.Value}");
+                    case TableResult table:
+                        Console.WriteLine(string.Join(" | ", table.Columns));
+                        Console.WriteLine(new string('-', 80));
+                        foreach (var row in table.Rows)
+                            Console.WriteLine(string.Join(" | ", row.Cells));
+                        break;
+                    case LogResult log:
+                        Console.WriteLine(log.RawText);
+                        break;
+                    case KeyValueResult kv:
+                        Console.WriteLine($"  {kv.Label,-30} : {kv.Value}");
+                        break;
                 }
             }
         }

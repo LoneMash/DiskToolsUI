@@ -10,8 +10,15 @@
     <AssemblyName>RunDeck</AssemblyName>
   </PropertyGroup>
 
+  <!-- Exclure le sous-projet de tests de la compilation principale -->
+  <ItemGroup>
+    <Compile Remove="Tests\**" />
+    <None Remove="Tests\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.1" />
     <PackageReference Include="System.Management.Automation" Version="7.4.1" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
@@ -35,5 +42,37 @@
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
 </ItemGroup>
+
+  <!-- ============================================================
+       Single-file publish : garder les DLL PowerShell hors du bundle
+       pour que le module loader les trouve en tant que fichiers physiques.
+       ============================================================ -->
+  <Target Name="ExcludePowerShellFromSingleFile"
+          AfterTargets="ComputeResolvedFilesToPublishList"
+          Condition="'$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <!-- DLLs référencées par les manifestes de modules PS -->
+      <ResolvedFileToPublish Update="@(ResolvedFileToPublish)"
+          Condition="$([System.String]::Copy('%(ResolvedFileToPublish.Filename)').StartsWith('Microsoft.Management.Infrastructure'))
+                  OR $([System.String]::Copy('%(ResolvedFileToPublish.Filename)').StartsWith('Microsoft.PowerShell.'))
+                  OR '%(ResolvedFileToPublish.Filename)' == 'System.Management.Automation'
+                  OR $([System.String]::Copy('%(ResolvedFileToPublish.Filename)').StartsWith('Microsoft.WSMan.'))">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
+  <!-- Copier le dossier Modules/ du SDK à la racine du publish
+       pour que $PSHOME/Modules fonctionne quand PSHOME = dossier de l'exe -->
+  <Target Name="CopyPSModulesToPublishRoot"
+          AfterTargets="Publish"
+          Condition="'$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <_PSModuleFiles Include="$(PublishDir)runtimes\win\lib\net8.0\Modules\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_PSModuleFiles)"
+          DestinationFiles="@(_PSModuleFiles->'$(PublishDir)Modules\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

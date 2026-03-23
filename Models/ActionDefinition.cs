@@ -1,3 +1,12 @@
+// ═══════════════════════════════════════════════════════════════════
+// ActionDefinition.cs — Modèle décrivant une action exécutable
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Représente une action pilotée par actions.json, avec son
+//        identifiant, script PS associé, catégorie et paramètres.
+// Couche : Models
+// Consommé par : MainWindowViewModel, SidebarView, PowerShellRunner
+// ═══════════════════════════════════════════════════════════════════
+
 // Version 1.0
 // Changelog :
 //   1.0 - v3.00 : Création — remplace ActionItem, entièrement piloté par actions.json

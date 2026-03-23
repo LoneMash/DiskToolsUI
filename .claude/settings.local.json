@@ -11,7 +11,14 @@
       "Bash(bash \"C:\\\\Users\\\\Famille\\\\.claude\\\\plugins\\\\cache\\\\claude-plugins-official\\\\superpowers\\\\5.0.2\\\\skills\\\\brainstorming\\\\scripts\\\\start-server.sh\" --project-dir \"C:\\\\Local\\\\HDD-SerialNumber\\\\DiskToolsUI\" 2>&1)",
       "WebSearch",
       "WebFetch(domain:github.com)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(\"C:\\\\Local\\\\HDD-SerialNumber\\\\DiskToolsUI\\\\publish\\\\RunDeck.exe\" /? 2>&1 || true)",
+      "Bash(\"C:\\\\Local\\\\HDD-SerialNumber\\\\DiskToolsUI\\\\publish\\\\RunDeck.exe\" --help 2>&1 || true)",
+      "Bash(powershell.exe -Command \"Get-ChildItem 'C:\\\\Program Files\\\\PowerShell' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name; \\(Get-Command pwsh -ErrorAction SilentlyContinue\\).Source\")",
+      "Bash(ls:*)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet sln:*)",
+      "Bash(dotnet test:*)"
     ]
   }
 }

@@ -8,5 +8,6 @@
     <converters:BoolToVisibilityConverter        x:Key="BoolToVisibilityConverter"/>
     <converters:BoolToVisibilityInverseConverter x:Key="BoolToVisibilityInverseConverter"/>
     <converters:EqualityConverter                x:Key="EqualityConverter"/>
+    <converters:RequiredFieldBorderConverter     x:Key="RequiredFieldBorderConverter"/>
 
 </ResourceDictionary>

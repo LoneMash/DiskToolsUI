@@ -1,15 +1,27 @@
-// CsvExportService.cs - Version 1.1
-// Changelog : Ajout using System.Linq manquant pour .Select() sur ObservableCollection
+// ═══════════════════════════════════════════════════════════════════
+// CsvExportService.cs — Export des résultats au format CSV
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Sérialise les ResultItem (Table, KeyValue, Log) en fichier CSV
+//        avec séparateur point-virgule et échappement des caractères spéciaux.
+// Couche : Services
+// Consommé par : MainWindowViewModel (export GUI), SilentRunner (export CLI)
+// ═══════════════════════════════════════════════════════════════════
+// CsvExportService.cs - Version 2.0
+// Changelog :
+//   1.1 - Ajout using System.Linq manquant pour .Select() sur ObservableCollection
+//   2.0 - Support export depuis LiveTable (streaming temps réel)
 
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using RunDeck.Interfaces;
 using RunDeck.Models;
 
 namespace RunDeck.Services
 {
-    public class CsvExportService
+    public class CsvExportService : ICsvExportService
     {
         /// <summary>
         /// Exporte une liste de ResultItem vers un fichier CSV.
@@ -21,22 +33,44 @@ namespace RunDeck.Services
 
             foreach (var item in results)
             {
-                if (item.IsTable)
+                switch (item)
                 {
-                    // MODE TABLEAU : en-têtes + lignes
-                    sb.AppendLine(string.Join(";", item.Columns));
+                    case TableResult table:
+                        // MODE TABLEAU — priorise LiveTable (streaming) si disponible
+                        if (table.LiveTable != null)
+                        {
+                            var colNames = table.LiveTable.Columns.Cast<DataColumn>()
+                                .Select(c => c.ColumnName);
+                            sb.AppendLine(string.Join(";", colNames));
 
-                    foreach (var row in item.Rows)
-                    {
-                        var cells = row.Cells.Select(c => EscapeCsv(c));
-                        sb.AppendLine(string.Join(";", cells));
-                    }
-                }
-                else
-                {
-                    // MODE CLÉ/VALEUR : deux colonnes "Propriété;Valeur"
-                    sb.AppendLine("Propriété;Valeur");
-                    sb.AppendLine($"{EscapeCsv(item.Label)};{EscapeCsv(item.Value)}");
+                            foreach (DataRow dr in table.LiveTable.Rows)
+                            {
+                                var cells = dr.ItemArray.Select(c => EscapeCsv(c?.ToString() ?? ""));
+                                sb.AppendLine(string.Join(";", cells));
+                            }
+                        }
+                        else
+                        {
+                            sb.AppendLine(string.Join(";", table.Columns));
+
+                            foreach (var row in table.Rows)
+                            {
+                                var cells = row.Cells.Select(c => EscapeCsv(c));
+                                sb.AppendLine(string.Join(";", cells));
+                            }
+                        }
+                        break;
+
+                    case LogResult log:
+                        // MODE LOG : texte brut tel quel
+                        sb.AppendLine(EscapeCsv(log.RawText));
+                        break;
+
+                    case KeyValueResult kv:
+                        // MODE CLÉ/VALEUR : deux colonnes "Propriété;Valeur"
+                        sb.AppendLine("Propriété;Valeur");
+                        sb.AppendLine($"{EscapeCsv(kv.Label)};{EscapeCsv(kv.Value)}");
+                        break;
                 }
             }
 

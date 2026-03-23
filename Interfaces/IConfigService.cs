@@ -1,24 +1,21 @@
 // ═══════════════════════════════════════════════════════════════════
-// ParametersView.xaml.cs — Code-behind du panneau de paramètres
+// IConfigService.cs — Contrat de chargement de la configuration
 // ═══════════════════════════════════════════════════════════════════
-// Rôle : Initialise le UserControl des paramètres d'action. Toute
-//        la logique métier est déléguée au MainWindowViewModel.
-// Couche : Views
-// Consommé par : MainWindow.xaml (intégré dans le layout central)
+// Rôle : Définit le chargement de la config globale (AppConfig) et
+//        de la liste des actions déclarées dans actions.json.
+// Couche : Interfaces
+// Consommé par : ConfigService, MainWindowViewModel (initialisation)
 // ═══════════════════════════════════════════════════════════════════
 
-// ParametersView.xaml.cs - Version 1.0
-// Changelog : Code-behind minimal, logique dans MainWindowViewModel
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using RunDeck.Models;
 
-using System.Windows.Controls;
-
-namespace RunDeck.Views
+namespace RunDeck.Interfaces
 {
-    public partial class ParametersView : UserControl
+    public interface IConfigService
     {
-        public ParametersView()
-        {
-            InitializeComponent();
-        }
+        Task<AppConfig> LoadConfigAsync();
+        Task<List<ActionDefinition>> LoadActionsAsync(string actionsFilePath);
     }
 }

@@ -1,5 +1,6 @@
-<!-- MainWindow.xaml - Version 5.0 -->
+<!-- MainWindow.xaml - Version 6.0 -->
 <!-- Style C# Design Pro : header contextuel, sidebar gradient, glass cards -->
+<!-- Refs couleurs en DynamicResource pour le switch de thème -->
 
 <Window x:Class="RunDeck.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -13,9 +14,9 @@
         Background="Transparent"
         ResizeMode="CanResizeWithGrip">
 
-    <Border Background="{StaticResource BackgroundDark}"
+    <Border Background="{DynamicResource BackgroundDark}"
             CornerRadius="{StaticResource CornerRadiusWindow}"
-            BorderBrush="{StaticResource BorderAccent}"
+            BorderBrush="{DynamicResource BorderAccent}"
             BorderThickness="{StaticResource BorderThicknessWindow}">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -36,7 +37,7 @@
 
                 <!-- HEADER CONTEXTUEL + boutons fenêtre -->
                 <Border Grid.Row="0"
-                        BorderBrush="{StaticResource BorderSubtle}"
+                        BorderBrush="{DynamicResource BorderSubtle}"
                         BorderThickness="0,0,0,1"
                         Padding="20,14"
                         MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
@@ -45,16 +46,16 @@
                             <TextBlock Text="{Binding SelectedAction.Name, FallbackValue='RunDeck'}"
                                        FontSize="{StaticResource FontSizeTitle}"
                                        FontWeight="SemiBold"
-                                       Foreground="{StaticResource TextPrimary}"/>
+                                       Foreground="{DynamicResource TextPrimary}"/>
                             <TextBlock Text="{Binding ActionDescription, FallbackValue='Sélectionnez une action dans la sidebar'}"
                                        FontSize="{StaticResource FontSizeSmall}"
-                                       Foreground="{StaticResource TextMuted}"
+                                       Foreground="{DynamicResource TextMuted}"
                                        Margin="0,3,0,0"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                            <Button Content="─" Style="{StaticResource MinimizeButton}"
+                            <Button Content="─" Style="{DynamicResource MinimizeButton}"
                                     Click="MinimizeButton_Click"/>
-                            <Button Content="✕" Style="{StaticResource CloseButton}"
+                            <Button Content="✕" Style="{DynamicResource CloseButton}"
                                     Click="CloseButton_Click"/>
                         </StackPanel>
                     </Grid>
@@ -73,11 +74,11 @@
 
                 <!-- BARRE DE STATUT -->
                 <Border Grid.Row="2"
-                        Background="{StaticResource BackgroundLight}"
-                        BorderBrush="{StaticResource BorderSubtle}"
+                        Background="{DynamicResource BackgroundLight}"
+                        BorderBrush="{DynamicResource BorderSubtle}"
                         BorderThickness="{StaticResource BorderThicknessStatusBar}">
                     <TextBlock Text="{Binding StatusMessage}"
-                               Foreground="{StaticResource TextMuted}"
+                               Foreground="{DynamicResource TextMuted}"
                                Margin="{StaticResource PaddingStatusBar}"
                                VerticalAlignment="Center"
                                FontSize="{StaticResource FontSizeSmall}"/>
@@ -86,13 +87,13 @@
 
             <!-- OVERLAY CHARGEMENT -->
             <Grid Grid.ColumnSpan="2"
-                  Background="{StaticResource LoadingOverlay}"
+                  Background="{DynamicResource LoadingOverlay}"
                   Visibility="{Binding IsLoading,
                                Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="⚡"
                                FontSize="{StaticResource LoadingIconSize}"
-                               Foreground="{StaticResource AccentColor}"
+                               Foreground="{DynamicResource AccentColor}"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,10">
                         <TextBlock.RenderTransform>
@@ -112,7 +113,7 @@
                     </TextBlock>
                     <TextBlock Text="Chargement en cours..."
                                FontSize="{StaticResource FontSizeLarge}"
-                               Foreground="{StaticResource TextPrimary}"
+                               Foreground="{DynamicResource TextPrimary}"
                                HorizontalAlignment="Center"/>
                 </StackPanel>
             </Grid>

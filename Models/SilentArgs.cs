@@ -1,3 +1,13 @@
+// ═══════════════════════════════════════════════════════════════════
+// SilentArgs.cs — Analyse des arguments en ligne de commande (CLI)
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Parse les arguments CLI pour le mode silencieux (--silent,
+//        --action, --all, --export, --format) et les paramètres
+//        dynamiques transmis aux scripts PowerShell.
+// Couche : Models
+// Consommé par : App.xaml.cs, MainWindowViewModel (mode headless)
+// ═══════════════════════════════════════════════════════════════════
+
 // SilentArgs.cs - Version 2.0
 // Changelog :
 //   1.0 - Initial : --silent, --action, --export, paramètres dynamiques

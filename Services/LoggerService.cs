@@ -1,3 +1,11 @@
+// ═══════════════════════════════════════════════════════════════════
+// LoggerService.cs — Journalisation centralisée sur fichier
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Écrit les messages d'information, d'erreur et d'exception
+//        dans un fichier log avec horodatage et niveaux de sévérité.
+// Couche : Services
+// Consommé par : PowerShellRunner, MainWindowViewModel, SilentRunner, App
+// ═══════════════════════════════════════════════════════════════════
 // LoggerService.cs - Version 2.3
 // Changelog : Ajout de LogError(string, Exception) pour compatibilité avec
 //             MainWindowViewModel et SilentRunner
@@ -7,17 +15,18 @@
 using System;
 using System.IO;
 using System.Text;
+using RunDeck.Helpers;
+using RunDeck.Interfaces;
 
 namespace RunDeck.Services
 {
-    public class LoggerService
+    public class LoggerService : ILoggerService
     {
         private readonly string _logFilePath;
 
         public LoggerService(string? logFileName = "error.log")
         {
-            // Toujours à côté de l'exe : bin/Debug/net8.0-windows/error.log
-            _logFilePath = Path.Combine(AppContext.BaseDirectory, logFileName ?? "error.log");
+            _logFilePath = PathHelper.ResolveRelativePath(logFileName ?? "error.log");
         }
 
         /// <summary>Logue un message d'information.</summary>

@@ -1,25 +1,139 @@
-<!-- SidebarView.xaml - Version 2.0 -->
-<!-- Style C# Design Pro : gradient, logo, catégories groupées, active indicator -->
+<!-- SidebarView.xaml - Version 4.0 -->
+<!-- Accordion sidebar + bouton thème -->
 
 <UserControl x:Class="RunDeck.Views.SidebarView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Border Background="{StaticResource SidebarGradient}"
-            BorderBrush="{StaticResource BorderSubtle}"
+    <UserControl.Resources>
+
+        <!-- Style Expander accordion pour les catégories -->
+        <Style x:Key="CategoryExpander" TargetType="Expander">
+            <Setter Property="IsExpanded"  Value="False"/>
+            <Setter Property="Margin"      Value="0,2"/>
+            <Setter Property="Foreground"  Value="{DynamicResource TextMuted}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Expander">
+                        <StackPanel>
+                            <!-- En-tête catégorie cliquable -->
+                            <ToggleButton x:Name="HeaderToggle"
+                                          IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          Cursor="Hand">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="HeaderBd"
+                                                Background="Transparent"
+                                                CornerRadius="{StaticResource CornerRadiusNavItem}"
+                                                Padding="10,8">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Chevron avec rotation animée -->
+                                                <TextBlock x:Name="Chevron"
+                                                           Grid.Column="0"
+                                                           Text="▸"
+                                                           FontSize="9"
+                                                           Foreground="{DynamicResource TextMuted}"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,6,0"
+                                                           RenderTransformOrigin="0.5,0.5">
+                                                    <TextBlock.RenderTransform>
+                                                        <RotateTransform x:Name="ChevronRotation" Angle="0"/>
+                                                    </TextBlock.RenderTransform>
+                                                </TextBlock>
+
+                                                <!-- Nom catégorie -->
+                                                <ContentPresenter Grid.Column="1"
+                                                                  ContentSource="Content"
+                                                                  VerticalAlignment="Center"/>
+
+                                                <!-- Badge compteur -->
+                                                <Border Grid.Column="2"
+                                                        Background="{DynamicResource ButtonHover}"
+                                                        CornerRadius="7"
+                                                        Padding="6,1"
+                                                        VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding ItemCount}"
+                                                               FontSize="9"
+                                                               Foreground="{DynamicResource TextMuted}"
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="HeaderBd" Property="Background" Value="{DynamicResource ButtonHover}"/>
+                                                <Setter TargetName="Chevron" Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="ChevronRotation"
+                                                                             Storyboard.TargetProperty="Angle"
+                                                                             To="90" Duration="0:0:0.15"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="ChevronRotation"
+                                                                             Storyboard.TargetProperty="Angle"
+                                                                             To="0" Duration="0:0:0.15"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                                <!-- Contenu du ToggleButton = nom de la catégorie -->
+                                <TextBlock Text="{Binding Name}"
+                                           FontSize="10"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextMuted}"/>
+                            </ToggleButton>
+
+                            <!-- Contenu dépliable (les actions) -->
+                            <Border x:Name="ContentBorder"
+                                    Margin="6,0,0,0"
+                                    Visibility="Collapsed">
+                                <ContentPresenter ContentSource="Content"/>
+                            </Border>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ContentBorder" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Border Background="{DynamicResource SidebarGradient}"
+            BorderBrush="{DynamicResource BorderSubtle}"
             BorderThickness="{StaticResource BorderThicknessSidebar}">
         <DockPanel>
 
             <!-- Logo zone -->
             <Border DockPanel.Dock="Top"
-                    BorderBrush="{StaticResource BorderSubtle}"
+                    BorderBrush="{DynamicResource BorderSubtle}"
                     BorderThickness="0,0,0,1"
                     Padding="16,14">
                 <StackPanel Orientation="Horizontal">
                     <Border Width="{StaticResource LogoIconSize}"
                             Height="{StaticResource LogoIconSize}"
                             CornerRadius="{StaticResource CornerRadiusButton}"
-                            Background="{StaticResource AccentGradient}"
+                            Background="{DynamicResource AccentGradient}"
                             Margin="0,0,10,0">
                         <TextBlock Text="⚡"
                                    FontSize="16"
@@ -31,98 +145,120 @@
                         <TextBlock Text="RunDeck"
                                    FontSize="{StaticResource FontSizeMedium}"
                                    FontWeight="SemiBold"
-                                   Foreground="{StaticResource TextPrimary}"/>
+                                   Foreground="{DynamicResource TextPrimary}"/>
                         <TextBlock Text="v3.0"
                                    FontSize="{StaticResource FontSizeCategory}"
-                                   Foreground="{StaticResource TextMuted}"/>
+                                   Foreground="{DynamicResource TextMuted}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
 
-            <!-- Footer : compteur -->
+            <!-- Footer : compteur + bouton thème -->
             <Border DockPanel.Dock="Bottom"
-                    BorderBrush="{StaticResource BorderSubtle}"
+                    BorderBrush="{DynamicResource BorderSubtle}"
                     BorderThickness="0,1,0,0"
-                    Padding="0,8">
-                <TextBlock Text="{Binding Actions.Count, StringFormat='{}{0} actions chargées'}"
-                           FontSize="{StaticResource FontSizeCategory}"
-                           Foreground="{StaticResource TextMuted}"
-                           HorizontalAlignment="Center"/>
+                    Padding="12,6">
+                <DockPanel>
+                    <TextBlock Text="{Binding Actions.Count, StringFormat='{}{0} actions'}"
+                               FontSize="{StaticResource FontSizeCategory}"
+                               Foreground="{DynamicResource TextMuted}"
+                               VerticalAlignment="Center"/>
+
+                    <!-- Bouton switch thème -->
+                    <Button x:Name="ThemeToggleButton"
+                            Content="{Binding ThemeLabel}"
+                            Command="{Binding ToggleThemeCommand}"
+                            HorizontalAlignment="Right"
+                            Cursor="Hand"
+                            FontSize="{StaticResource FontSizeCategory}"
+                            Foreground="{DynamicResource TextMuted}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="4,2">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd"
+                                        Background="Transparent"
+                                        CornerRadius="{StaticResource CornerRadiusNavItem}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ButtonHover}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </DockPanel>
             </Border>
 
-            <!-- Liste des actions groupées par catégorie -->
-            <ListBox ItemsSource="{Binding GroupedActions}"
-                     SelectedItem="{Binding SelectedAction}"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     Margin="8,6,8,6"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <!-- Accordion : catégories dépliables -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding GroupedActions}"
+                              Margin="8,6,8,6">
 
-                <!-- Style des groupes (catégories) -->
-                <ListBox.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}"
-                                           FontSize="{StaticResource FontSizeCategory}"
-                                           FontWeight="SemiBold"
-                                           Foreground="{StaticResource TextMuted}"
-                                           Margin="10,10,0,4"
-                                           />
-                                <!-- Note: le texte des catégories est déjà en majuscules dans actions.json -->
-                            </DataTemplate>
-                        </GroupStyle.HeaderTemplate>
-                    </GroupStyle>
-                </ListBox.GroupStyle>
+                    <ItemsControl.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="GroupItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="GroupItem">
+                                                <Expander Style="{StaticResource CategoryExpander}">
+                                                    <ItemsPresenter/>
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </ItemsControl.GroupStyle>
 
-                <!-- Supprime le style natif ListBoxItem -->
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="Padding"    Value="0"/>
-                        <Setter Property="Margin"     Value="0,1"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <ContentPresenter/>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListBox.ItemContainerStyle>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
 
-                <!-- Template d'un item d'action -->
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Button Style="{StaticResource SidebarButton}"
-                                Command="{Binding DataContext.SelectActionCommand,
-                                         RelativeSource={RelativeSource AncestorType=Window}}"
-                                CommandParameter="{Binding}"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Left">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Icon}"
-                                               FontSize="13"
-                                               Opacity="0.6"
-                                               VerticalAlignment="Center"
-                                               Margin="0,0,8,0"/>
-                                    <TextBlock Text="{Binding Name}"
-                                               VerticalAlignment="Center"
-                                               TextTrimming="CharacterEllipsis"/>
-                                </StackPanel>
-                            </Button.Content>
-                            <Button.Background>
-                                <MultiBinding Converter="{StaticResource EqualityConverter}">
-                                    <Binding Path="DataContext.SelectedAction"
-                                             RelativeSource="{RelativeSource AncestorType=Window}"/>
-                                    <Binding/>
-                                </MultiBinding>
-                            </Button.Background>
-                        </Button>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                    <!-- Template d'un item d'action -->
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{DynamicResource SidebarButton}"
+                                    Command="{Binding DataContext.SelectActionCommand,
+                                             RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Icon}"
+                                                   FontSize="13"
+                                                   Opacity="0.6"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding Name}"
+                                                   VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                </Button.Content>
+                                <Button.Background>
+                                    <MultiBinding Converter="{StaticResource EqualityConverter}">
+                                        <Binding Path="DataContext.SelectedAction"
+                                                 RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                        <Binding/>
+                                    </MultiBinding>
+                                </Button.Background>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
         </DockPanel>
     </Border>

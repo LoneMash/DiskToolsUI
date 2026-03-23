@@ -1,5 +1,12 @@
-// TypeToVisibilityConverter.cs - Version 1.0
-// Changelog : Affiche/masque TextBox ou ComboBox selon le Type du paramètre (config.json)
+// ═══════════════════════════════════════════════════════════════════
+// TypeToVisibilityConverter.cs — Affichage conditionnel par type
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Compare le type réel d'un paramètre (text, dropdown…) au
+//        type attendu via ConverterParameter ; affiche le contrôle
+//        correspondant (TextBox ou ComboBox) et masque l'autre.
+// Couche : Converters
+// Consommé par : ParametersView (bindings XAML des champs dynamiques)
+// ═══════════════════════════════════════════════════════════════════
 
 using System;
 using System.Globalization;

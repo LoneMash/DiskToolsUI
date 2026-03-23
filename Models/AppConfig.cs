@@ -1,3 +1,12 @@
+// ═══════════════════════════════════════════════════════════════════
+// AppConfig.cs — Configuration générale de l'application
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Regroupe les classes de configuration (UI, logging) et les
+//        modèles de désérialisation JSON pour actions.json.
+// Couche : Models
+// Consommé par : App.xaml.cs, MainWindowViewModel, ConfigLoader
+// ═══════════════════════════════════════════════════════════════════
+
 // Version 2.0
 // Changelog :
 //   1.0 - Initial : structure couplée à un script PS unique

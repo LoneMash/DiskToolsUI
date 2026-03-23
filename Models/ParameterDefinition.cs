@@ -1,3 +1,12 @@
+// ═══════════════════════════════════════════════════════════════════
+// ParameterDefinition.cs — Définition d'un paramètre d'action
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Modèle observable décrivant un paramètre de formulaire
+//        (nom, type, valeur courante, options dropdown, obligatoire).
+// Couche : Models
+// Consommé par : ParametersView, MainWindowViewModel, PowerShellRunner
+// ═══════════════════════════════════════════════════════════════════
+
 // Version 2.0
 // Changelog :
 //   1.0 - v3.00 : Création — remplace ParameterItem, désormais piloté par actions.json

@@ -1,4 +1,13 @@
-// Version 4.0
+// ═══════════════════════════════════════════════════════════════════
+// PowerShellRunner.cs — Exécution de scripts PowerShell et parsing des résultats
+// ═══════════════════════════════════════════════════════════════════
+// Rôle : Gère un runspace PowerShell partagé (avec cache de scripts) et
+//        propose deux modes d'exécution : batch (ExecuteActionAsync) et
+//        streaming temps réel (ExecuteActionStreamingAsync via BeginInvoke).
+// Couche : Services
+// Consommé par : MainWindowViewModel, SilentRunner
+// ═══════════════════════════════════════════════════════════════════
+// Version 5.0
 // Changelog :
 //   1.0 - Initial
 //   2.3 - Support arrays, PSCustomObject, Hashtable, types simples
@@ -9,6 +18,8 @@
 //                 Runspace recréé proprement si script autonome (isolation)
 //   4.0 - Auto-détection du type de sortie (Table, KeyValue, Log)
 //          Suppression de la dépendance à OutputType dans ActionDefinition
+//   5.0 - Streaming temps réel via BeginInvoke + PSDataCollection.DataAdded
+//          Nouveau point d'entrée : ExecuteActionStreamingAsync (callback par objet)
 
 using System;
 using System.Collections;
@@ -18,22 +29,24 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using System.Threading;
 using System.Threading.Tasks;
 using RunDeck.Helpers;
+using RunDeck.Interfaces;
 using RunDeck.Models;
 
 namespace RunDeck.Services
 {
-    public class PowerShellRunner : IDisposable
+    public class PowerShellRunner : IPowerShellRunner
     {
-        private readonly LoggerService _logger;
+        private readonly ILoggerService _logger;
         private readonly HashSet<string> _loadedScripts = new(StringComparer.OrdinalIgnoreCase);
         private Runspace _runspace;
         private bool _disposed;
 
-        public PowerShellRunner(LoggerService? logger = null)
+        public PowerShellRunner(ILoggerService logger)
         {
-            _logger = logger ?? new LoggerService();
+            _logger = logger;
             _runspace = CreateRunspace();
             _logger.LogInfo("PowerShellRunner initialisé.");
         }
@@ -64,6 +77,89 @@ namespace RunDeck.Services
                 LoadScriptIfNeeded(scriptPath);
                 return ExecuteFunction(action.FunctionName, parameters);
             });
+        }
+
+        // -----------------------------------------------------------------------
+        // Streaming — chaque PSObject déclenche le callback en temps réel
+        // -----------------------------------------------------------------------
+        public async Task ExecuteActionStreamingAsync(
+            ActionDefinition action,
+            Dictionary<string, object> parameters,
+            Action<PSObject> onObjectReceived,
+            CancellationToken cancellationToken = default)
+        {
+            await Task.Run(() =>
+            {
+                var scriptPath = PathHelper.ResolveRelativePath(action.ScriptPath);
+
+                if (!File.Exists(scriptPath))
+                {
+                    var msg = $"Script introuvable : {scriptPath}";
+                    _logger.LogError(msg);
+                    throw new FileNotFoundException(msg);
+                }
+
+                Runspace? isolatedRunspace = null;
+                PowerShell ps;
+
+                if (action.FunctionName == null)
+                {
+                    // Script autonome → runspace isolé
+                    isolatedRunspace = CreateRunspace();
+                    ps = PowerShell.Create();
+                    ps.Runspace = isolatedRunspace;
+                    ps.AddScript(File.ReadAllText(scriptPath));
+                    foreach (var param in parameters)
+                        ps.AddParameter(param.Key, param.Value);
+                }
+                else
+                {
+                    // Script avec fonction → runspace partagé
+                    LoadScriptIfNeeded(scriptPath);
+                    ps = PowerShell.Create();
+                    ps.Runspace = _runspace;
+                    ps.AddCommand(action.FunctionName);
+                    foreach (var param in parameters)
+                        ps.AddParameter(param.Key, param.Value);
+                }
+
+                try
+                {
+                    var output = new PSDataCollection<PSObject>();
+                    output.DataAdded += (sender, e) =>
+                    {
+                        var collection = (PSDataCollection<PSObject>)sender!;
+                        var obj = collection[e.Index];
+                        onObjectReceived(obj);
+                    };
+
+                    // Enregistrer l'annulation → ps.Stop() libère le runspace
+                    using var registration = cancellationToken.Register(() =>
+                    {
+                        _logger.LogInfo($"Annulation demandée : {action.FunctionName ?? scriptPath}");
+                        ps.Stop();
+                    });
+
+                    var asyncResult = ps.BeginInvoke<PSObject, PSObject>(null, output);
+                    ps.EndInvoke(asyncResult);
+
+                    // Ne pas vérifier les erreurs si annulé (PipelineStoppedException est normale)
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        CheckErrors(ps, action.FunctionName ?? scriptPath);
+                        _logger.LogInfo($"Action streaming terminée : {action.FunctionName ?? scriptPath}");
+                    }
+                    else
+                    {
+                        _logger.LogInfo($"Action streaming annulée : {action.FunctionName ?? scriptPath}");
+                    }
+                }
+                finally
+                {
+                    ps.Dispose();
+                    isolatedRunspace?.Dispose();
+                }
+            }, cancellationToken);
         }
 
         // -----------------------------------------------------------------------
@@ -202,7 +298,7 @@ namespace RunDeck.Services
                 if (obj.BaseObject is Hashtable hashtable)
                 {
                     foreach (DictionaryEntry entry in hashtable)
-                        items.Add(new ResultItem
+                        items.Add(new KeyValueResult
                         {
                             Label = entry.Key?.ToString() ?? string.Empty,
                             Value = entry.Value?.ToString() ?? string.Empty
@@ -215,7 +311,7 @@ namespace RunDeck.Services
                 if (props.Count > 0)
                 {
                     foreach (var prop in props)
-                        items.Add(new ResultItem
+                        items.Add(new KeyValueResult
                         {
                             Label = prop.Name,
                             Value = prop.Value?.ToString() ?? string.Empty
@@ -224,10 +320,10 @@ namespace RunDeck.Services
                 }
 
                 // Valeur simple (string, int…)
-                items.Add(new ResultItem
+                items.Add(new KeyValueResult
                 {
                     Label = "Résultat",
-                    Value = obj.ToString()
+                    Value = obj.ToString() ?? string.Empty
                 });
             }
 
@@ -261,9 +357,8 @@ namespace RunDeck.Services
 
             return new List<ResultItem>
             {
-                new ResultItem
+                new TableResult
                 {
-                    IsTable = true,
                     Columns = columns,
                     Rows    = rows
                 }
@@ -281,9 +376,8 @@ namespace RunDeck.Services
 
             return new List<ResultItem>
             {
-                new ResultItem
+                new LogResult
                 {
-                    IsLog   = true,
                     RawText = string.Join(Environment.NewLine, lines)
                 }
             };
@@ -294,7 +388,9 @@ namespace RunDeck.Services
         // -----------------------------------------------------------------------
         private static Runspace CreateRunspace()
         {
-            var iss = InitialSessionState.CreateDefault();
+            // PSHOME est configuré par PathHelper.EnsurePSHome() au démarrage
+            // de l'app (App.OnStartup) — inutile de le refaire ici.
+            var iss = InitialSessionState.CreateDefault2();
             iss.ExecutionPolicy = Microsoft.PowerShell.ExecutionPolicy.Bypass;
             var rs = RunspaceFactory.CreateRunspace(iss);
             rs.Open();

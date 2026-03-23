@@ -1,40 +1,38 @@
 // ═══════════════════════════════════════════════════════════════════
-// EqualityConverter.cs — Surbrillance de l'élément sélectionné
+// RequiredFieldBorderConverter.cs — Bordure de validation des champs
 // ═══════════════════════════════════════════════════════════════════
-// Rôle : MultiValueConverter qui compare deux valeurs (élément
-//        courant vs élément sélectionné) et retourne un gradient
-//        violet translucide si égaux, transparent sinon. Utilisé
-//        pour le style de sélection dans la sidebar.
+// Rôle : MultiValueConverter qui retourne une bordure rouge si le
+//        champ est marqué Required et que sa valeur est vide, ou
+//        transparente sinon. Fournit un retour visuel immédiat.
 // Couche : Converters
-// Consommé par : SidebarView (MultiBinding sur la liste d'actions)
+// Consommé par : ParametersView (MultiBinding sur les champs requis)
 // ═══════════════════════════════════════════════════════════════════
 
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
 namespace RunDeck.Converters
 {
-    public class EqualityConverter : IMultiValueConverter
+    /// <summary>
+    /// MultiValueConverter : retourne une bordure rouge si le champ est Required ET vide.
+    /// Values[0] = Required (bool), Values[1] = CurrentValue (string).
+    /// </summary>
+    public class RequiredFieldBorderConverter : IMultiValueConverter
     {
-        // Couleur active : gradient violet translucide
-        private static readonly LinearGradientBrush SelectedBrush = new(
-            Color.FromArgb(0x4D, 0x6C, 0x5C, 0xE7),  // #6C5CE7 à 30%
-            Colors.Transparent,
-            new Point(0, 0.5),
-            new Point(1, 0.5));
-
-        // Couleur par défaut : transparent
-        private static readonly SolidColorBrush DefaultBrush = Brushes.Transparent;
+        private static readonly Brush ErrorBrush = new SolidColorBrush(Color.FromRgb(0xE5, 0x3E, 0x3E));
+        private static readonly Brush DefaultBrush = Brushes.Transparent;
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values.Length < 2) return DefaultBrush;
 
-            return values[0] != null && values[0] == values[1]
-                ? SelectedBrush
+            var required = values[0] is bool b && b;
+            var currentValue = values[1] as string ?? string.Empty;
+
+            return required && string.IsNullOrWhiteSpace(currentValue)
+                ? ErrorBrush
                 : DefaultBrush;
         }
 

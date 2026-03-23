@@ -1,9 +1,9 @@
-# PowerShell_Base.ps1 - Version 3.0
+﻿# PowerShell_Base.ps1 - Version 3.0
 # Changelog :
 #   2.2 - Ajout de Get-AvailableDrives pour lister tous les lecteurs disponibles
 #   3.0 - Ajout de Get-InstalledKB et Get-SystemInfo
 #         Renommage en PowerShell_Base (script unique pour toutes les actions)
-
+Import-Module CimCmdlets
 $script:DiskDriveInfo    = $null
 $script:DiskLogicalInfo  = $null
 $script:DiskHardwareInfo = $null
@@ -55,10 +55,10 @@ function Get-AvailableDrives {
             $type    = switch ($drive.DriveType) {
                 2 { "Amovible" }
                 3 { "Local" }
-                4 { "Réseau" }
+                4 { "RÃ©seau" }
             }
-            # Clé = lettre du lecteur (ex: "C"), valeur = description affichée
-            $result[$drive.DeviceID] = "$($drive.DeviceID) — $label ($type) $freeGB/$totalGB GB"
+            # ClÃ© = lettre du lecteur (ex: "C"), valeur = description affichÃ©e
+            $result[$drive.DeviceID] = "$($drive.DeviceID) â€ $label ($type) $freeGB/$totalGB GB"
         }
 
         return $result
@@ -90,7 +90,7 @@ function Get-DiskInfo {
             DriveType   = switch ($disk.DriveType) {
                             2 { "Disque amovible" }
                             3 { "Disque local" }
-                            4 { "Lecteur réseau" }
+                            4 { "Lecteur rÃ©seau" }
                             5 { "CD-ROM" }
                             default { "Inconnu" }
                           }
@@ -139,9 +139,9 @@ function Get-FreeSpace {
         $totalGB     = [math]::Round($disk.Size / 1GB, 2)
         $percentFree = [math]::Round(($disk.FreeSpace / $disk.Size) * 100, 2)
 
-        $status = if ($percentFree -lt 10)   { "⚠️ CRITIQUE" }
-                  elseif ($percentFree -lt 20) { "⚠️ ATTENTION" }
-                  else                         { "✅ OK" }
+        $status = if ($percentFree -lt 10)   { "âš ï¸ CRITIQUE" }
+                  elseif ($percentFree -lt 20) { "âš ï¸ ATTENTION" }
+                  else                         { "âœ… OK" }
 
         return @{
             DeviceID    = $disk.DeviceID
@@ -171,27 +171,27 @@ function Get-CompleteStats {
         $percentUsed = [math]::Round((($logical.Size - $logical.FreeSpace) / $logical.Size) * 100, 2)
         $percentFree = [math]::Round(($logical.FreeSpace / $logical.Size) * 100, 2)
 
-        $state = if ($percentFree -lt 10)   { "⚠️ CRITIQUE - Espace insuffisant" }
-                 elseif ($percentFree -lt 20) { "⚠️ ATTENTION - Espace faible" }
-                 else                         { "✅ OK - Espace suffisant" }
+        $state = if ($percentFree -lt 10)   { "âš ï¸ CRITIQUE - Espace insuffisant" }
+                 elseif ($percentFree -lt 20) { "âš ï¸ ATTENTION - Espace faible" }
+                 else                         { "âœ… OK - Espace suffisant" }
 
         return @{
             "Lecteur"              = $logical.DeviceID
             "Nom de volume"        = if ($logical.VolumeName) { $logical.VolumeName } else { "Sans nom" }
-            "Système de fichiers"  = $logical.FileSystem
+            "SystÃ¨me de fichiers"  = $logical.FileSystem
             "Type"                 = switch ($logical.DriveType) {
                                         2 { "Disque amovible" }
                                         3 { "Disque local" }
-                                        4 { "Lecteur réseau" }
+                                        4 { "Lecteur rÃ©seau" }
                                         5 { "CD-ROM" }
                                         default { "Inconnu" }
                                      }
             "Taille totale"        = "$totalGB GB"
-            "Espace utilisé"       = "$usedGB GB ($percentUsed %)"
+            "Espace utilisÃ©"       = "$usedGB GB ($percentUsed %)"
             "Espace libre"         = "$freeGB GB ($percentFree %)"
-            # "Numéro de série (vol)" = if ($logical.VolumeSerialNumber) { $logical.VolumeSerialNumber } else { "N/A" }
-            "Numéro de série (HW)" = if ($hardware.SerialNumber) { $hardware.SerialNumber } else { "N/A" }
-            "État"                 = $state
+            # "NumÃ©ro de sÃ©rie (vol)" = if ($logical.VolumeSerialNumber) { $logical.VolumeSerialNumber } else { "N/A" }
+            "NumÃ©ro de sÃ©rie (HW)" = if ($hardware.SerialNumber) { $hardware.SerialNumber } else { "N/A" }
+            "Ã‰tat"                 = $state
         }
     }
     catch {
@@ -208,7 +208,7 @@ function Get-AllDisks {
             Nom        = if ($disk.VolumeName) { $disk.VolumeName } else { "Sans nom" }
             Taille     = "{0:N1} GB" -f ($disk.Size / 1GB)
             Libre      = "{0:N1} GB" -f ($disk.FreeSpace / 1GB)
-            Système    = $disk.FileSystem
+            Systeme    = $disk.FileSystem
         }
     }
 
@@ -216,7 +216,7 @@ function Get-AllDisks {
 }
 
 # --------------------------------------------------------------------------
-# Fonctions système (hors disque)
+# Fonctions systÃ¨me (hors disque)
 # --------------------------------------------------------------------------
 
 function Get-InstalledKB {
@@ -283,3 +283,125 @@ function Get-SystemInfo {
     }
 }
 
+function Get-UsbHistory {
+    # Supprimer toutes les erreurs non-terminantes (accès registre, CIM)
+    # pour éviter que CheckErrors() ne les traite comme un échec
+    $ErrorActionPreference = 'SilentlyContinue'
+
+    try {
+        $usbStorPath = "HKLM:\SYSTEM\CurrentControlSet\Enum\USBSTOR"
+
+        if (-not (Test-Path $usbStorPath)) {
+            return @{ Error = "Clé registre USBSTOR introuvable." }
+        }
+
+        $results = @()
+
+        foreach ($deviceClass in Get-ChildItem $usbStorPath) {
+            $classname = $deviceClass.PSChildName
+            $vendor  = ""
+            $product = ""
+
+            if ($classname -match "Ven_([^&]+)") { $vendor  = $Matches[1].Replace("_", " ").Trim() }
+            if ($classname -match "Prod_([^&]+)") { $product = $Matches[1].Replace("_", " ").Trim() }
+
+            $displayName = if ($vendor -and $product) { "$vendor $product" }
+                           elseif ($product) { $product }
+                           elseif ($vendor) { $vendor }
+                           else { $classname }
+
+            foreach ($instance in Get-ChildItem $deviceClass.PSPath) {
+                $serial = $instance.PSChildName
+                if ($serial -match "^&\d+$") { $serial = "N/A" }
+
+                $status = "Déconnecté"
+
+                # Statut actuel via PnP
+                $escapedSerial = $serial.Replace("\", "\\")
+                $pnp = Get-CimInstance -ClassName Win32_PnPEntity -Filter "DeviceID LIKE '%$escapedSerial%'" |
+                       Select-Object -First 1
+                if ($pnp -and $pnp.Status -eq "OK") { $status = "Connecté" }
+
+                $results += [PSCustomObject]@{
+                    Nom         = $displayName
+                    'N° série'  = $serial
+                    Statut      = $status
+                }
+            }
+        }
+
+        if ($results.Count -eq 0) {
+            return @{ Error = "Aucun périphérique USB trouvé dans le registre." }
+        }
+
+        return $results | Sort-Object 'Dernière conn.' -Descending
+    }
+    catch {
+        return @{ Error = "Erreur dans Get-UsbHistory : $($_.Exception.Message)" }
+    }
+}
+
+function Get-ExternalCommand {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Command
+    )
+
+    try {
+        # Exécuter via cmd /c pour supporter les commandes système, .vbs, .bat, etc.
+        $output = cmd /c $Command 2>&1
+
+        # Filtrer les lignes vides et retourner comme texte brut (mode Log)
+        $lines = $output | Where-Object { $_ -and $_.ToString().Trim() -ne "" }
+
+        if (-not $lines) {
+            return "Aucune sortie retournée par la commande."
+        }
+
+        return ($lines | ForEach-Object { $_.ToString() })
+    }
+    catch {
+        return "Erreur lors de l'exécution : $($_.Exception.Message)"
+    }
+}
+
+function Get-PingLive {
+    param(
+        [string]$Target     = "localhost",
+        [int]$Count         = 20,
+        [int]$IntervalMs    = 1000
+    )
+
+    for ($i = 1; $i -le $Count; $i++) {
+        try {
+            $ping = Test-Connection -ComputerName $Target -Count 1 -ErrorAction Stop
+            $ms   = $ping.ResponseTime
+
+            $statut = if ($ms -lt 10) { "Excellent" }
+                      elseif ($ms -lt 50) { "Bon" }
+                      elseif ($ms -lt 100) { "Moyen" }
+                      else { "Lent" }
+
+            [PSCustomObject]@{
+                '#'       = $i
+                Heure     = (Get-Date).ToString("HH:mm:ss")
+                Cible     = $Target
+                'Temps'   = "$ms ms"
+                Statut    = $statut
+            }
+        }
+        catch {
+            [PSCustomObject]@{
+                '#'       = $i
+                Heure     = (Get-Date).ToString("HH:mm:ss")
+                Cible     = $Target
+                'Temps'   = "---"
+                Statut    = "Timeout"
+            }
+        }
+
+        if ($i -lt $Count) {
+            Start-Sleep -Milliseconds $IntervalMs
+        }
+    }
+}

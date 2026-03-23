@@ -1,24 +1,19 @@
 // ═══════════════════════════════════════════════════════════════════
-// ParametersView.xaml.cs — Code-behind du panneau de paramètres
+// ICsvExportService.cs — Contrat d'export des résultats en CSV
 // ═══════════════════════════════════════════════════════════════════
-// Rôle : Initialise le UserControl des paramètres d'action. Toute
-//        la logique métier est déléguée au MainWindowViewModel.
-// Couche : Views
-// Consommé par : MainWindow.xaml (intégré dans le layout central)
+// Rôle : Définit l'export d'une collection de ResultItem vers un
+//        fichier CSV, utilisé après l'exécution d'une action.
+// Couche : Interfaces
+// Consommé par : CsvExportService, MainWindowViewModel (export)
 // ═══════════════════════════════════════════════════════════════════
 
-// ParametersView.xaml.cs - Version 1.0
-// Changelog : Code-behind minimal, logique dans MainWindowViewModel
+using System.Collections.Generic;
+using RunDeck.Models;
 
-using System.Windows.Controls;
-
-namespace RunDeck.Views
+namespace RunDeck.Interfaces
 {
-    public partial class ParametersView : UserControl
+    public interface ICsvExportService
     {
-        public ParametersView()
-        {
-            InitializeComponent();
-        }
+        void Export(IEnumerable<ResultItem> results, string filePath);
     }
 }
